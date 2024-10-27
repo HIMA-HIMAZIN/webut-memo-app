@@ -1,41 +1,37 @@
-import { useRouter } from 'next/router';
-import Image from 'next/image';
+"use client";  // クライアントコンポーネントとしてマーク
+
+import { useRouter, usePathname } from 'next/navigation';  // 'next/router' を 'next/navigation' に変更
 import React from 'react';
 
 interface ActionButtonProps {
   title: string;
-  iconPath: string;         // SVGのパス
   path: string;              // 遷移先のパス
   className?: string;        // スタイルを追加するためのクラス
-  backgroundColor?: string;  // ボタン背景色
-  activeColor?: string;      // アクティブ時の背景色
 }
 
 export function ActionButton({
   title,
-  iconPath,
   path,
   className = "",
-  backgroundColor = "#ffffff",
-  activeColor = "#f0f0f0",
 }: ActionButtonProps) {
   const router = useRouter();
-  const isActive = router.pathname === path;
+  const pathname = usePathname();
+  const isActive = pathname === path;  // 現在のパスをチェック
 
   const handleClick = () => {
-    router.push(path);
+    router.push(path);  // 遷移先に移動
   };
 
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center p-3 border border-gray-300 rounded ${className}`}
+      className={`flex items-center p-3 m-10 text-black rounded-full  ${className}`}
       style={{
-        backgroundColor: isActive ? activeColor : backgroundColor,
+        backgroundColor: isActive ? "#f0f0f0" : "#FAFAFA",
+        color: isActive ? "#5DB53E" : "#8C8C8C"
       }}
     >
-      <Image src={iconPath} alt={`${title} icon`} width={24} height={24} />
-      <span className="ml-2">{title}</span>
+      <div className="ml-2">{title}</div>
     </button>
   );
 }
