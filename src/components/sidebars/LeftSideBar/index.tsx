@@ -21,12 +21,12 @@ export function LeftSideBar() {
     setModalOpen(false);
   };
   return (
-    <div className="bg-zinc-100 h-screen w-1/5 pl-5 pt-5"
+    <div className="bg-zinc-100 h-screen w-1/5 pl-8 pt-8"
     style={{
       backgroundColor:"#FAFAFA",
     }}>
       <div>
-        <div className="m-2">
+        <div className="mb-5">
           <Image
               src="/icons/club-icon.svg"
               alt="Example Image"
