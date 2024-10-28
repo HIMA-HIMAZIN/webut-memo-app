@@ -1,37 +1,39 @@
-"use client";  // クライアントコンポーネントとしてマーク
+"use client";
 
-import { useRouter, usePathname } from 'next/navigation';  // 'next/router' を 'next/navigation' に変更
+import { useRouter, usePathname } from 'next/navigation';
 import React from 'react';
 
 interface ActionButtonProps {
   title: string;
-  path: string;              // 遷移先のパス
-  className?: string;        // スタイルを追加するためのクラス
+  path: string;              
+  icon: React.ElementType;
+  className?: string;
 }
 
 export function ActionButton({
   title,
   path,
-  className = "",
+  icon: Icon,
 }: ActionButtonProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const isActive = pathname === path;  // 現在のパスをチェック
+  const isActive = pathname === path;
 
   const handleClick = () => {
-    router.push(path);  // 遷移先に移動
+    router.push(path);
   };
 
   return (
     <button
       onClick={handleClick}
-      className={`flex items-center p-3 m-10 text-black rounded-full  ${className}`}
+      className={`flex justify-start items-center p-2 my-5 text-black font-medium rounded-full w-9/12`}
       style={{
         backgroundColor: isActive ? "#f0f0f0" : "#FAFAFA",
         color: isActive ? "#5DB53E" : "#8C8C8C"
       }}
     >
-      <div className="ml-2">{title}</div>
+      <Icon color={isActive ? "#5DB53E" : "#8C8C8C"} height={32} width={32}  className = "mx-2"/>
+      <div className="ml-4 text-2xl">{title}</div>
     </button>
   );
 }
