@@ -4,8 +4,11 @@ import { Xmark } from 'iconoir-react';
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Edit } from 'iconoir-react';
 
-const MAX_CHAR_LIMIT = 30;
-const memoSchema = z.string().max(MAX_CHAR_LIMIT, "文字数が300文字を超えています。");
+const MAX_CHAR_LIMIT = 150;
+const URL_CHAR_LIMIT = 80;
+
+const memoSchema = z.string().max(MAX_CHAR_LIMIT, "文字数が150文字を超えています。");
+const urlSchema = z.string().url().max(URL_CHAR_LIMIT, "URLは80文字以下にしてください");
 
 interface MemoModalProps {
   isOpen: boolean;
@@ -39,13 +42,28 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     const input = e.target.value;
     setMemo(input);
 
-    // Validate the input length with Zod
-    const result = memoSchema.safeParse(input);
-    if (!result.success) {
-      setError(result.error.errors[0].message);
-    } else {
-      setError(null);
+    // 入力全体の文字数をバリデーション
+    const memoResult = memoSchema.safeParse(input);
+    if (!memoResult.success) {
+      setError(memoResult.error.errors[0].message);
+      return;
     }
+
+    // URLの検出と50文字以下のバリデーション
+    const urlPattern = /https?:\/\/[^\s]+/g;
+    const foundUrls = input.match(urlPattern);
+    if (foundUrls) {
+      for (const url of foundUrls) {
+        const urlResult = urlSchema.safeParse(url);
+        if (!urlResult.success) {
+          setError(urlResult.error.errors[0].message);
+          return;
+        }
+      }
+    }
+
+    // すべてのバリデーションが成功したらエラーをクリア
+    setError(null);
   };
 
   if (!isOpen) return null;
@@ -60,7 +78,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
       </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-5/6 sm:w-3/6 md:max-w-md lg:max-w-lg h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg w-full sm:w-5/6 md:max-w-md lg:max-w-lg h-3/5 flex flex-col"
       >
         <h2 className="text-xl font-bold mb-4">Memo</h2>
         <textarea
@@ -77,7 +95,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
           </span>
         </div>
       </div>
-      <div className="fixed bottom-5 w-2/12 flex justify-center items-center xl:w-3/12">
+      <div className="fixed bottom-10 w-2/12 flex justify-center items-center xl:w-3/12">
         <PrimaryButton 
           title="メモする" 
           icon={Edit} 
