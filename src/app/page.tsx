@@ -13,8 +13,9 @@ export default function Home() {
         </div>
         <div className="w-full md:w-1/2  bg-white">
           <ReloadButton />
-          <PostCard title="くまさん" content="こんにちは" path="path" timeAgo='15分前' />
-          <PostCard title="くまさん" content="明日は暑いですねああああああ" path="path" timeAgo='15分前'/>
+          <PostCard title="パンダ" content="こんにちは" path="panda" timeAgo='15分前' />
+          <PostCard title="ゴリラ" content="明日は暑いですねああああああ" path="gorira" timeAgo='15分前'/>
+          <PostCard title="ぶた" content="腹へった" path="buta" timeAgo='15分前'/>
         </div>
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           右サイド
