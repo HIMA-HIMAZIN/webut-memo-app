@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECT_URL")
+  schemas  = ["public"]
+}
+
+model MemoLog {
+  id         Int      @id @default(autoincrement()) @db.Integer
+  content    String?  @db.Text
+  isPublic   Boolean  @default(false) @map("is_public") /// 公開・非公開設定
+  likeCount  Int      @default(0) @map("like_count") /// いいねの数
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@map("memo_logs")
+  @@schema("public")
+}
