@@ -10,7 +10,7 @@ export default function Home() {
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar />
         </div>
-        <div className="w-full md:w-1/2 bg-white">
+        <div className="w-full md:w-1/2  bg-white">
           <ReloadButton />
         </div>
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
