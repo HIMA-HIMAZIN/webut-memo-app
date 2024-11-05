@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as z from "zod";
 import { Xmark } from 'iconoir-react';
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
+import { Edit } from 'iconoir-react';
 
 const MAX_CHAR_LIMIT = 30;
 const memoSchema = z.string().max(MAX_CHAR_LIMIT, "文字数が300文字を超えています。");
@@ -54,11 +56,11 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
         onClick={onClose}
         className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
       >
-      <Xmark height={40} width={40} strokeWidth={2}/>
+        <Xmark height={40} width={40} strokeWidth={2} />
       </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg max-w-screen-md sm:w-2/3 h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg w-5/6 sm:w-3/6 md:max-w-md lg:max-w-lg h-3/5 flex flex-col"
       >
         <h2 className="text-xl font-bold mb-4">Memo</h2>
         <textarea
@@ -74,6 +76,14 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
             {memo.length} / {MAX_CHAR_LIMIT}
           </span>
         </div>
+      </div>
+      <div className="fixed bottom-5 w-2/12 flex justify-center items-center xl:w-3/12">
+        <PrimaryButton 
+          title="メモする" 
+          icon={Edit} 
+          onClick={() => {}} 
+          disabled={error !== null || memo.length === 0} 
+        />
       </div>
     </div>
   );
