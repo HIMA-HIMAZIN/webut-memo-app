@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { LeftSideBar } from '../components/sidebars/LeftSideBar';
+import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
 
@@ -26,6 +27,9 @@ export default function Home() {
         
         <div className="w-full md:w-1/2 bg-white">
           <ReloadButton />
+          <PostCard title="パンダ" content="こんにちは" path="panda" timeAgo='15分前' />
+          <PostCard title="ゴリラ" content="明日は暑いですねああああああ" path="gorira" timeAgo='15分前'/>
+          <PostCard title="ぶた" content="腹へった" path="buta" timeAgo='15分前'/>
         </div>
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
