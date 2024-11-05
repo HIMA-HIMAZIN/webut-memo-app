@@ -1,6 +1,5 @@
 import React from 'react';
 import { LeftSideBar } from '../components/sidebars/LeftSideBar';
-import { RightSideBar } from '../components/sidebars/RightSideBar';
 import ReloadButton from '../components/buttons/ReloadButton';
 
 export default function Home() {
@@ -11,11 +10,9 @@ export default function Home() {
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar />
         </div>
-
-        <div className="w-full md:w-1/2 bg-white p-4">
-          メインコンテンツ
+        <div className="w-full md:w-1/2 bg-white">
+          <ReloadButton />
         </div>
-
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           右サイド
         </div>

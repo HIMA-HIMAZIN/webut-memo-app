@@ -11,10 +11,10 @@ const ReloadButton: React.FC = () => {
   return (
     <button
       onClick={handleReload}
-      className="bg-zinc-100 hover:bg-zinc-200 text-white font-bold py-2 px-4 flex items-center justify-center gap-2"
+      className="bg-contentbg hover:bg-zinc-200 w-full py-2 flex items-center pt-5 pb-5 justify-center"
     >
         <ReloadWindow className="text-action"height={18} width={18} strokeWidth={2}/>
-        <div className="text-base text-action">リロード</div>
+        <div className="text-base font-normal text-action">メモを更新</div>
     </button>
   );
 };

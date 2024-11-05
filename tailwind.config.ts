@@ -20,6 +20,13 @@ const config: Config = {
           hover: "#46A325",
         },
       },
+      screens: {
+        sm: '480px',
+        md: '768px', 
+        lg: '1290px',
+        xl: '1280px',
+        '2xl': '1536px',
+      },
     },
   },
   plugins: [],
