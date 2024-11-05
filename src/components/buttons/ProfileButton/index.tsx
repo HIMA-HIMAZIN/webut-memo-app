@@ -21,7 +21,7 @@ export function ProfileButton({
   return (
     <button
     onClick={handleClick}
-    className={`flex justify-start items-center m-3 text-black font-bold rounded-full w-11/12`}
+    className={`flex justify-start items-center m-3 text-black font-bold rounded-full w-fit`}
   >
     <Image src="/icons/bear.svg" alt="profile" height={42} width={42} />
     <div className="ml-3 text-2xl">{title}</div>
