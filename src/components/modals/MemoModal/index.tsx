@@ -1,14 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import * as z from "zod";
 import { Xmark } from 'iconoir-react';
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Edit } from 'iconoir-react';
 
 const MAX_CHAR_LIMIT = 150;
-const URL_CHAR_LIMIT = 80;
-
-const memoSchema = z.string().max(MAX_CHAR_LIMIT, "文字数が150文字を超えています。");
-const urlSchema = z.string().url().max(URL_CHAR_LIMIT, "URLは80文字以下にしてください");
 
 interface MemoModalProps {
   isOpen: boolean;
@@ -19,6 +14,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const [memo, setMemo] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [displayLength, setDisplayLength] = useState(0); // 表示上の文字数
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,32 +34,29 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     };
   }, [isOpen, onClose]);
 
+  const calculateDisplayLength = (text: string) => {
+    const urlPattern = /https?:\/\/[^\s]+/g;
+    let totalLength = 0;
+
+    // URLを探して、それ以外のテキストの長さと合わせて計算
+    const parts = text.split(urlPattern);
+    const urls = text.match(urlPattern) || [];
+
+    // URL部分を20文字換算、それ以外の部分はそのまま長さを足す
+    totalLength += parts.reduce((sum, part) => sum + part.length, 0);
+    totalLength += urls.reduce((sum, url) => sum + (url.length > 20 ? 20 : url.length), 0);
+
+    return totalLength;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
     setMemo(input);
 
-    // 入力全体の文字数をバリデーション
-    const memoResult = memoSchema.safeParse(input);
-    if (!memoResult.success) {
-      setError(memoResult.error.errors[0].message);
-      return;
-    }
-
-    // URLの検出と50文字以下のバリデーション
-    const urlPattern = /https?:\/\/[^\s]+/g;
-    const foundUrls = input.match(urlPattern);
-    if (foundUrls) {
-      for (const url of foundUrls) {
-        const urlResult = urlSchema.safeParse(url);
-        if (!urlResult.success) {
-          setError(urlResult.error.errors[0].message);
-          return;
-        }
-      }
-    }
-
-    // すべてのバリデーションが成功したらエラーをクリア
-    setError(null);
+    // 表示上の文字数を計算し、エラーメッセージを設定
+    const displayLen = calculateDisplayLength(input);
+    setDisplayLength(displayLen);
+    setError(displayLen > MAX_CHAR_LIMIT ? "文字数が30文字を超えています。" : null);
   };
 
   if (!isOpen) return null;
@@ -90,8 +83,8 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
         ></textarea>
         <div className="flex justify-end items-center mt-2">
           {error && <p className="text-red-500">{error}</p>}
-          <span className={`text-sm pl-5 ${memo.length > MAX_CHAR_LIMIT ? "text-red-500" : "text-gray-600"}`}>
-            {memo.length} / {MAX_CHAR_LIMIT}
+          <span className={`text-sm pl-5 ${displayLength > MAX_CHAR_LIMIT ? "text-red-500" : "text-gray-600"}`}>
+            {displayLength} / {MAX_CHAR_LIMIT}
           </span>
         </div>
       </div>
