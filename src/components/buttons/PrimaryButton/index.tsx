@@ -32,7 +32,7 @@ export function PrimaryButton({
       } text-white`}
       >
       <Icon color="#FFFFFF" height={30} width={30} className="lg:mx-2" />
-      <div className="ml-4 text-2xl hidden lg:block">{title}</div>
+      <div className="ml-2 text-2xl hidden lg:block">{title}</div>
     </button>
   );
 }

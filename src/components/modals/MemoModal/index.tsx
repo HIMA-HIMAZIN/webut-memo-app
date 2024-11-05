@@ -51,7 +51,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-11/12 sm:w-1/2 h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg max-w-screen-md sm:w-2/3 h-3/5 flex flex-col"
       >
         <h2 className="text-xl font-bold mb-4">Memo</h2>
         <textarea

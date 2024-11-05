@@ -26,7 +26,7 @@ export function ActionButton({
   return (
     <button
       onClick={handleClick}
-      className={`flex justify-start items-center p-5 my-5 hover:bg-gray-100 font-medium rounded-full lg:w-9/12 ${
+      className={`flex justify-start items-center p-4 my-5 hover:bg-gray-100 font-medium rounded-full lg:w-9/12 ${
         isActive ? "text-primary" : "text-black"
       } transition-colors`}
     >
@@ -36,7 +36,7 @@ export function ActionButton({
         width={32}
         className=" lg:mx-2"
       />
-      <div className="ml-4 text-2xl hidden lg:block">{title}</div>
+      <div className="ml-2 text-2xl hidden lg:block">{title}</div>
     </button>
   );
 }
