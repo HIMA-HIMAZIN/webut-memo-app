@@ -26,14 +26,17 @@ export function ActionButton({
   return (
     <button
       onClick={handleClick}
-      className={`flex justify-start items-center p-2 my-5 text-black font-medium rounded-full w-9/12`}
-      style={{
-        backgroundColor: isActive ? "#f0f0f0" : "#FAFAFA",
-        color: isActive ? "#5DB53E" : "#8C8C8C"
-      }}
+      className={`flex justify-start items-center p-4 my-5 hover:bg-gray-100 font-medium rounded-full lg:w-9/12 ${
+        isActive ? "text-primary" : "text-black"
+      } transition-colors`}
     >
-      <Icon color={isActive ? "#5DB53E" : "#8C8C8C"} height={32} width={32}  className = "mx-2"/>
-      <div className="ml-4 text-2xl">{title}</div>
+      <Icon
+        color={isActive ? "#5DB53E" : "#8C8C8C"}
+        height={32}
+        width={32}
+        className=" lg:mx-2"
+      />
+      <div className="ml-2 text-2xl hidden lg:block">{title}</div>
     </button>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as z from "zod";
+import { Xmark } from 'iconoir-react';
 
 const MAX_CHAR_LIMIT = 30;
 const memoSchema = z.string().max(MAX_CHAR_LIMIT, "文字数が300文字を超えています。");
@@ -49,9 +50,15 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <button
+        onClick={onClose}
+        className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
+      >
+      <Xmark height={40} width={40} strokeWidth={2}/>
+      </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-11/12 sm:w-1/2 h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg max-w-screen-md sm:w-2/3 h-3/5 flex flex-col"
       >
         <h2 className="text-xl font-bold mb-4">Memo</h2>
         <textarea

@@ -21,10 +21,7 @@ export function LeftSideBar() {
     setModalOpen(false);
   };
   return (
-    <div className="bg-zinc-100 h-screen w-1/5 pl-8 pt-8"
-    style={{
-      backgroundColor:"#FAFAFA",
-    }}>
+    <div className="pl-8 pt-8">
       <div>
         <div className="mb-5">
           <Image
@@ -34,9 +31,9 @@ export function LeftSideBar() {
               height={30}
           />
         </div>
-        <ProfileButton title="くまさん" path="/" />
+        {/* <ProfileButton title="くまさん" path="/" /> */}
         <ActionButton title="みんな"path="/" icon={Planet}/>
-        <ActionButton title="設定" path="/settings" icon={Settings}/>
+        {/* <ActionButton title="設定" path="/settings" icon={Settings}/> */}
         <PrimaryButton title="メモする" icon={Edit} onClick={handleButtonClick}/>
         <MemoModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
