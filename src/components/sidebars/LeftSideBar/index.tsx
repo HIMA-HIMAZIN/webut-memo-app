@@ -1,30 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { Settings,Planet, Edit } from 'iconoir-react';
+import React from "react";
+import { Planet, Edit } from 'iconoir-react';
 import Image from 'next/image';
 
 // components
-import {ActionButton}  from "@/components/buttons/ActionButton";
-import {ProfileButton} from "@/components/buttons/ProfileButton";
-import {PrimaryButton} from "@/components/buttons/PrimaryButton";
-import { MemoModal } from "@/components/modals/MemoModal";
+import { ActionButton } from "@/components/buttons/ActionButton";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
-export function LeftSideBar() {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const handleButtonClick = () => {
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+export function LeftSideBar({ onOpenModal }: { onOpenModal: () => void }) {
   return (
-    <div className="bg-zinc-100 h-screen w-1/5 pl-8 pt-8"
-    style={{
-      backgroundColor:"#FAFAFA",
-    }}>
+    <div className="pl-8 pt-8">
       <div>
         <div className="mb-5">
           <Image
@@ -34,11 +20,8 @@ export function LeftSideBar() {
               height={30}
           />
         </div>
-        <ProfileButton title="くまさん" path="/" />
-        <ActionButton title="みんな"path="/" icon={Planet}/>
-        <ActionButton title="設定" path="/settings" icon={Settings}/>
-        <PrimaryButton title="メモする" icon={Edit} onClick={handleButtonClick}/>
-        <MemoModal isOpen={isModalOpen} onClose={handleCloseModal} />
+        <ActionButton title="みんな" path="/" icon={Planet} />
+        <PrimaryButton title="メモする" icon={Edit} onClick={onOpenModal} />
       </div>
     </div>
   );
