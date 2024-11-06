@@ -13,17 +13,21 @@ export async function main(){
 // 全メモログ取得API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const GET = async (req: Request, res: NextResponse) => {
-
-   try{
-        await main();
-        const memos = await prisma.memoLog.findMany();
-        return NextResponse.json({ message: 'success', memos }, { status: 200 });
-   }catch(e){
-        return NextResponse.json({ message: 'error', e }, { status: 500 });
-   }finally{
-        await prisma.$disconnect();
-   }
-};
+     try {
+          await main();
+          const memos = await prisma.memoLog.findMany({
+              where: {
+                  isPublic: true,
+              },
+          });
+          return NextResponse.json({ message: 'success', memos }, { status: 200 });
+     } catch (e) {
+          return NextResponse.json({ message: 'error', e }, { status: 500 });
+     } finally {
+          await prisma.$disconnect();
+     }
+  };
+  
     
 // メモ投稿API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
