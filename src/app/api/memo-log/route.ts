@@ -43,4 +43,46 @@ export const POST= async (req: Request, res: NextResponse) => {
          await prisma.$disconnect();
     }
  };
-     
+
+ // メモ削除API
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const DELETE = async (req: Request, res: NextResponse) => {
+     try {
+         const { id } = await req.json(); // id should be provided in the request body
+         await main();
+         const deleteMemo = await prisma.memoLog.delete({
+             where: {
+                 id: Number(id), // Assuming 'id' is a number; adjust if it's a string
+             },
+         });
+         return NextResponse.json({ message: 'success', deleteMemo }, { status: 200 });
+     } catch (e) {
+         return NextResponse.json({ message: 'error', e }, { status: 500 });
+     } finally {
+         await prisma.$disconnect();
+     }
+ };
+ 
+// メモ更新API
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PUT = async (req: Request, res: NextResponse) => {
+     try {
+         const { id, content, isPublic } = await req.json(); // id, content, and isPublic are required in the request body
+         await main();
+         const updatedMemo = await prisma.memoLog.update({
+             where: {
+                 id: Number(id), // Assuming 'id' is a number
+             },
+             data: {
+                 content: content,
+                 isPublic: isPublic,
+                 updatedAt: new Date(), // This will set the updated time to the current time
+             },
+         });
+         return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });
+     } catch (e) {
+         return NextResponse.json({ message: 'error', e }, { status: 500 });
+     } finally {
+         await prisma.$disconnect();
+     }
+ };

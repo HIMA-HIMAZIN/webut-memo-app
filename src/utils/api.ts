@@ -36,3 +36,43 @@ export async function postMemo(memoContent: string, isPublic : boolean): Promise
     return null;
   }
 }
+
+// メモを削除するAPI
+export async function deleteMemo(id: number): Promise<boolean> {
+  try {
+    const response = await fetch(`http://localhost:3000/api/memo-log`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to delete memo");
+    }
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+// メモを更新するAPI
+export async function updateMemo(id: number, memoContent: string, isPublic: boolean): Promise<MemoLogType | null> {
+  try {
+    const response = await fetch('http://localhost:3000/api/memo-log', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id, content: memoContent, isPublic }),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to update memo");
+    }
+    return response.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
