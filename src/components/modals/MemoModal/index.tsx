@@ -1,7 +1,12 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { Xmark } from 'iconoir-react';
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { Edit } from 'iconoir-react';
+import { Planet, Edit } from 'iconoir-react';
+import { postMemo } from '@/utils/api';
+import { IconText } from '@/components/headers/IconText';
+import  IosSwitcheButton  from '@/components/buttons/IosSwitchButton';
 
 const MAX_CHAR_LIMIT = 150;
 
@@ -12,13 +17,16 @@ interface MemoModalProps {
 
 export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const [memo, setMemo] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
-  const [displayLength, setDisplayLength] = useState(0); // 表示上の文字数
+  const [displayLength, setDisplayLength] = useState(0);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node) && buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -38,11 +46,9 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     const urlPattern = /https?:\/\/[^\s]+/g;
     let totalLength = 0;
 
-    // URLを探して、それ以外のテキストの長さと合わせて計算
     const parts = text.split(urlPattern);
     const urls = text.match(urlPattern) || [];
 
-    // URL部分を20文字換算、それ以外の部分はそのまま長さを足す
     totalLength += parts.reduce((sum, part) => sum + part.length, 0);
     totalLength += urls.reduce((sum, url) => sum + (url.length > 20 ? 20 : url.length), 0);
 
@@ -53,10 +59,29 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     const input = e.target.value;
     setMemo(input);
 
-    // 表示上の文字数を計算し、エラーメッセージを設定
     const displayLen = calculateDisplayLength(input);
     setDisplayLength(displayLen);
-    setError(displayLen > MAX_CHAR_LIMIT ? "文字数が30文字を超えています。" : null);
+    setError(displayLen > MAX_CHAR_LIMIT ? "文字数が150文字を超えています。" : null);
+  };
+
+  const handleSwitchChange = () => {
+    setIsPublic((prev) => !prev); // スイッチの切り替えでisPublicを反転
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const result = await postMemo(memo, isPublic);
+      if (result) {
+        window.location.reload();
+        setMemo("");
+        onClose();
+      } else {
+        setError("メモの送信に失敗しました。");
+      }
+    } catch (error) {
+      console.error(error);
+      setError("メモの送信中にエラーが発生しました。");
+    }
   };
 
   if (!isOpen) return null;
@@ -71,9 +96,15 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
       </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-full sm:w-2/3 max-w-screen-md md:h-3/5 h-2/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg w-full sm:w-5/6 md:max-w-md lg:max-w-lg h-3/5 flex flex-col"
       >
-        <h2 className="text-xl font-bold mb-4">Memo</h2>
+        <div className="flex items-center justify-around m-2">
+          <h2 className="text-xl font-bold">Memo</h2>
+          <div className="flex items-center justify-center">
+            <IconText text="公開する" icon={Planet} />
+            <IosSwitcheButton checked={isPublic} onChange={handleSwitchChange} />
+          </div>
+        </div>
         <textarea
           className="w-full h-full p-2 resize-none overflow-y-auto text-2xl border-none outline-none"
           placeholder="メモを入力..."
@@ -88,11 +119,11 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
           </span>
         </div>
       </div>
-      <div className="fixed bottom-10 w-2/12 flex justify-center items-center xl:w-3/12">
+      <div className="fixed bottom-10 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
         <PrimaryButton 
           title="メモする" 
           icon={Edit} 
-          onClick={() => {}} 
+          onClick={handleSubmit} 
           disabled={error !== null || memo.length === 0} 
         />
       </div>
