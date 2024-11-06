@@ -1,13 +1,26 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { MemoLogType } from '@/types';
 import { LeftSideBar } from '../components/sidebars/LeftSideBar';
 import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
+import { formatDistanceToNow } from 'date-fns';
+import { fetchMemos } from '@/utils/api';
 
 export default function Home() {
+  const [memos, setMemos] = useState<MemoLogType[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    const getMemos = async () => {
+      const memosData = await fetchMemos();
+      const sortedMemos = memosData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      setMemos(sortedMemos);
+    };
+    getMemos();
+  }, []);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -27,9 +40,17 @@ export default function Home() {
         
         <div className="w-full md:w-1/2 bg-white">
           <ReloadButton />
-          <PostCard title="パンダ" content="こんにちは" path="panda" timeAgo='15分前' />
-          <PostCard title="ゴリラ" content="明日は暑いですねああああああ" path="gorira" timeAgo='15分前'/>
-          <PostCard title="ぶた" content="腹へった" path="buta" timeAgo='15分前'/>
+          <div className="overflow-y-auto max-h-[90vh]">
+            {memos.map((memo: MemoLogType) => (
+              <PostCard
+                key={memo.id}
+                title="パンダ"
+                content={memo.content}
+                path="panda"
+                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true })}
+              />
+            ))}
+          </div>
         </div>
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
