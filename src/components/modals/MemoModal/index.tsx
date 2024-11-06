@@ -96,7 +96,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
       </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-full sm:w-5/6 md:max-w-md lg:max-w-lg h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg w-4/5 max-w-screen-md max-h-screen-md  h-3/5 flex flex-col"
       >
         <div className="flex items-center justify-around m-2">
           <h2 className="text-xl font-bold">Memo</h2>
