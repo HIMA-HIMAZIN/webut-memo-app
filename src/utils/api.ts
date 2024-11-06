@@ -30,8 +30,7 @@ export async function postMemo(memoContent: string, isPublic : boolean): Promise
     if (!response.ok) {
       throw new Error("Failed to post memo");
     }
-    const data = await response.json();
-    return data.memo;
+    return response.json();
   } catch (error) {
     console.error(error);
     return null;
