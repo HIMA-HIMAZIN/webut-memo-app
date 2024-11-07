@@ -33,7 +33,7 @@ export function LeftSideBar({ isLogin, onMemoModal, onOpenModal }: LeftSideBarPr
         </div>
         <ProfileButton title="HIMAZIN"  path = "kitune"/>
         <ActionButton title="みんな" path="/" icon={Planet} />
-        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} />
+        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true}/>
       </div>
     </div>
     

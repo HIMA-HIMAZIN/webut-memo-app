@@ -119,12 +119,13 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
           </span>
         </div>
       </div>
-      <div className="fixed bottom-10 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
+      <div className="fixed bottom-20 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
         <PrimaryButton 
           title="メモする" 
           icon={Edit} 
           onClick={handleSubmit} 
-          disabled={error !== null || memo.length === 0} 
+          disabled={error !== null || memo.length === 0}
+          hideTextOnSmallScreen={false}
         />
       </div>
     </div>
