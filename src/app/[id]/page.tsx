@@ -87,7 +87,7 @@ export default function Profile({}: { params: { id: string } }) {
           <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}/>
         </div>
         
-        <div className="w-full md:w-1/2 bg-white">
+        <div className="md:w-1/2 bg-white md:min-w-[640px]">
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
               <ReturnButton />
@@ -176,7 +176,7 @@ export default function Profile({}: { params: { id: string } }) {
             </CustomTabPanel>
           </div>
         </div>
-        <div className="hidden md:block w-1/4 bg-contentbg p-4">
+        <div className="hidden md:block flex-grow bg-contentbg p-4">
           右サイド
         </div>
       </div>

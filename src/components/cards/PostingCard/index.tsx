@@ -31,7 +31,7 @@ export function PostCard({ title, content, path, timeAgo }: PostCardProps) {
         <ProfileButton title={title} path={path} />
         <span className="text-base p-3 pr-5 text-gray-500">{timeAgo}</span>
       </div>
-      <div className="ml-16 mr-5">
+      <div className="ml-16 mr-24">
         <p className="text-gray-700">{parseContentWithLinks(content)}</p>
       </div>
     </div>

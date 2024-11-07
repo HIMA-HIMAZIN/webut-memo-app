@@ -8,6 +8,7 @@ import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
 import { AccountModal } from '@/components/modals/AccountModal';
 import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale'; 
 import { fetchMemos } from '@/utils/public-all/api';
 
 export default function Home() {
@@ -42,7 +43,7 @@ export default function Home() {
           <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}  />
         </div>
 
-        <div className="md:w-1/2 bg-white md:min-w-[600px]">
+        <div className="md:w-1/2 bg-white md:min-w-[640px]">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">
             {memos.map((memo: MemoLogType) => (
@@ -51,7 +52,7 @@ export default function Home() {
                 title="パンダ"
                 content={memo.content}
                 path="panda"
-                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true })}
+                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true, locale: ja })}
               />
             ))}
           </div>
