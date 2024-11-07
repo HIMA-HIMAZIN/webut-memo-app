@@ -9,6 +9,7 @@ import { LeftSideBar } from '@/components/sidebars/LeftSideBar';
 import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import { MemoModal } from '@/components/modals/MemoModal';
+import { AccountModal } from '@/components/modals/AccountModal';
 import ArrowBox from '@/components/boxes/ArrowBox';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -48,11 +49,14 @@ function a11yProps(index: number) {
 export default function Profile({}: { params: { id: string } }) {
   const { id } = useParams();
   const [memos, setMemos] = useState<MemoLogType[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isMemoModalOpen, setMemoModalOpen] = useState(false);
+  const [isAccountModalOpen, setAccountModalOpen] = useState(false);
   const [countMemos, setCountMemos] = useState(0);
   const [value, setValue] = React.useState(0);
   const imageNumber = 'panda'; // パンダの画像を設定
   const imageUrl = `/images/profile_icon/${imageNumber || 'panda'}.png`; // プレースホルダー画像も設定
+  const isLogin = true; 
+  
   useEffect(() => {
     const getMemos = async () => {
       const memosData = await fetchMemos();
@@ -63,13 +67,11 @@ export default function Profile({}: { params: { id: string } }) {
     getMemos();
   }, []);
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+  const openMemoModal = () => setMemoModalOpen(true);
+  const closeMemoModal = () => setMemoModalOpen(false);
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
+  const openAccountModal = () => setAccountModalOpen(true);
+  const closeAccountModal = () => setAccountModalOpen(false);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -80,7 +82,7 @@ export default function Profile({}: { params: { id: string } }) {
       <div className="flex w-full max-w-7xl">
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
-          <LeftSideBar onOpenModal={handleOpenModal} />
+          <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}/>
         </div>
         
         <div className="w-full md:w-1/2 bg-white">
@@ -151,7 +153,7 @@ export default function Profile({}: { params: { id: string } }) {
               </Box>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-[60vh]">
+          <div className="overflow-y-auto max-h-[70vh]">
             <CustomTabPanel value={value} index={0}>
               {memos.map((memo: MemoLogType) => (
                   <IndividualPostCard
@@ -176,8 +178,11 @@ export default function Profile({}: { params: { id: string } }) {
           右サイド
         </div>
       </div>
-      {/* モーダルをルート直下に配置し、常に表示できるようにする */}
-      <MemoModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <MemoModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
+      <AccountModal 
+        isOpen={isAccountModalOpen} 
+        onClose={closeAccountModal} 
+      />
     </div>
   );
 }

@@ -33,18 +33,12 @@ export default function Home() {
   const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
 
-  const handleAccountModalButtonClick = () => {
-    console.log("Account Modal Button clicked!");
-    closeAccountModal(); // 必要に応じてモーダルを閉じる
-  };
-
   return (
     
     <div className="flex justify-center min-h-screen bg-contentbg">
       <div className="flex w-full max-w-7xl">
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
-          {/* 各モーダルの開く関数をそれぞれ渡す */}
           <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}  />
         </div>
         

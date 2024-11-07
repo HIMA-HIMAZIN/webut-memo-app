@@ -25,14 +25,14 @@ export function PrimaryButton({
     <button
       onClick={handleClick}
       disabled={disabled}
-      className={`flex justify-start items-center p-4 my-5 font-medium rounded-full lg:w-9/12 transition-colors ${
+      className={`flex justify-start items-center p-4 my-5 font-medium max-w-fit rounded-full lg:w-9/12 transition-colors ${
         disabled
         ? "bg-gray-400 cursor-not-allowed"
         : "bg-primary hover:bg-primary-hover"
       } text-white`}
       >
       <Icon color="#FFFFFF" height={30} width={30} className="lg:mx-2" />
-      <div className="ml-2 text-2xl hidden lg:block">{title}</div>
+      <div className="ml-2 text-2xl hidden lg:block mx-2">{title}</div>
     </button>
   );
 }
