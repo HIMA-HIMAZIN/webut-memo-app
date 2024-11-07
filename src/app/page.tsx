@@ -15,7 +15,7 @@ export default function Home() {
   const [isMemoModalOpen, setMemoModalOpen] = useState(false);
   const [isAccountModalOpen, setAccountModalOpen] = useState(false);
 
-  const isLogin = false; 
+  const isLogin = true; 
   
   useEffect(() => {
     const getMemos = async () => {
