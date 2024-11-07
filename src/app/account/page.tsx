@@ -24,7 +24,6 @@ const ExamplePage = () => {
         <AccountModal 
           isOpen={isModalOpen} 
           onClose={closeModal} 
-          onButtonClick={handleButtonClick} 
         />
       )}
     </div>

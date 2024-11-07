@@ -73,7 +73,6 @@ export default function Home() {
       <AccountModal 
         isOpen={isAccountModalOpen} 
         onClose={closeAccountModal} 
-        onButtonClick={handleAccountModalButtonClick}  // onButtonClickを追加
       />
     </div>
   );
