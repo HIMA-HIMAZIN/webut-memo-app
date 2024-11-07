@@ -41,8 +41,8 @@ export default function Home() {
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}  />
         </div>
-        
-        <div className="w-full md:w-1/2 bg-white">
+
+        <div className="md:w-1/2 bg-white md:min-w-[600px]">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">
             {memos.map((memo: MemoLogType) => (
@@ -57,7 +57,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div className="hidden md:block w-1/4 bg-contentbg p-4">
+        <div className="hidden md:block flex-grow bg-contentbg p-4">
           右サイド
         </div>
       </div>

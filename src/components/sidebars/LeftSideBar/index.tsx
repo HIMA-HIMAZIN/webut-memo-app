@@ -23,7 +23,7 @@ export function LeftSideBar({ isLogin, onMemoModal, onOpenModal }: LeftSideBarPr
   return (
     <div className="pl-8 pt-8">
       <div>
-        <div className="mb-5">
+        <div className="mb-5 ml-4">
           <Image
               src="/icons/club-icon.svg"
               alt="Example Image"

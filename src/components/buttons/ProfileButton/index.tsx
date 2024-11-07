@@ -22,7 +22,7 @@ export function ProfileButton({
       className={`flex justify-start items-center m-3 mb-1 text-black font-bold rounded-full w-fit`}
     >
       <Image className='rounded-full' src={imageUrl} alt="profile" height={40} width={40} />
-      <div className="ml-3 text-xl">{title}</div>
+      <div className="ml-2 text-2xl hidden lg:block">{title}</div>
     </button>
   </Link>
   );
