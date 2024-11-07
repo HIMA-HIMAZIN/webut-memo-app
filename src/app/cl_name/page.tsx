@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 {/*components*/}
 import { ProgressionCircle } from '@/components/Bar/ProgressionBer/circle';
 import { GuideTitle } from '@/components/headers/GuideTitle';
@@ -8,18 +9,26 @@ const CreateUserName = () => {
 
     const activeStep = 3;
   return (
-    <div className="flex flex-col items-center m-12 space-y-10 md:space-y-16 lg:space-y-40">
-      {/* ProgressionCircleの表示 */}
-      <ProgressionCircle activeStep={activeStep} />
+    <div className="pl-8 pt-8 mb-5">
+      <Image
+              src="/icons/club-icon.svg"
+              alt="Example Image"
+              width={30}
+              height={30}
+          />
+        <div className="flex flex-col items-center m-12 space-y-10 md:space-y-16 lg:space-y-40">
+        {/* ProgressionCircleの表示 */}
+        <ProgressionCircle activeStep={activeStep} />
 
-      {/* GuideTitleの表示 */}
-      <GuideTitle text="最後にハンドルネームを教えてね！" />
+        {/* GuideTitleの表示 */}
+        <GuideTitle text="最後にハンドルネームを教えてね！" />
 
-      {/* テキストボックスの表示 */}
-      
-      <Box sx={{ width: '40%', mt: 20 }}>
-        <TextField fullWidth label="username" id="fullWidth" />
-      </Box>
+        {/* テキストボックスの表示 */}
+        
+        <Box sx={{ width: '40%', mt: 20 }}>
+            <TextField fullWidth label="username" id="fullWidth" />
+        </Box>
+        </div>
     </div>
   );
 };
