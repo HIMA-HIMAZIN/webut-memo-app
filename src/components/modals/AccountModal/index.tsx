@@ -3,17 +3,49 @@
 import React, { useRef, useEffect } from "react";
 import { Xmark } from 'iconoir-react';
 import Script from 'next/script'
+import { createClient } from '@supabase/supabase-js';
 
 interface AccountModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-const clientId = process.env.Google_Client_ID
+
+interface GoogleSignInResponse {
+  credential: string;
+}
+
+const clientId = process.env.NEXT_PUBLIC_Google_Client_ID
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+
+
+declare global {
+  interface Window {
+    handleSignInWithGoogle: (response: GoogleSignInResponse) => void;
+  }
+}
 
 export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
+  async function handleSignInWithGoogle(response: GoogleSignInResponse) {
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'google',
+      token: response.credential,
+    });
+
+    if (error) {
+      console.error('Google Sign-In error:', error.message);
+    } else {
+      console.log('User signed in:', data);
+      onClose(); // サインイン後にモーダルを閉じる
+    }
+  }
+
   useEffect(() => {
+    if (isOpen) {
+      window.handleSignInWithGoogle = handleSignInWithGoogle;
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose();
@@ -61,7 +93,7 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
             data-shape="pill"
             data-theme="outline"
             data-text="signin_with"
-            data-size="large"
+            data-size="x-large"
             data-logo_alignment="left">
         </div>
       </div>
