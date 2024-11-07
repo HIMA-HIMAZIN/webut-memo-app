@@ -3,7 +3,7 @@ import { MemoLogType } from '@/types';
 // メモを取得するAPI
 export async function fetchMemos(): Promise<MemoLogType[]> {
   try {
-    const response = await fetch('http://localhost:3000/api/memo-log', {
+    const response = await fetch('http://localhost:3000/api/profile', {
       cache: 'no-store',
     });
     if (!response.ok) {
@@ -17,10 +17,11 @@ export async function fetchMemos(): Promise<MemoLogType[]> {
   }
 }
 
+
 //　メモを投稿するAPI
 export async function postMemo(memoContent: string, isPublic : boolean): Promise<MemoLogType | null> {
   try {
-    const response = await fetch('http://localhost:3000/api/memo-log', {
+    const response = await fetch('http://localhost:3000/api/profile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ export async function postMemo(memoContent: string, isPublic : boolean): Promise
 // メモを削除するAPI
 export async function deleteMemo(id: number): Promise<boolean> {
   try {
-    const response = await fetch(`http://localhost:3000/api/memo-log`, {
+    const response = await fetch(`http://localhost:3000/api/profile`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -60,7 +61,7 @@ export async function deleteMemo(id: number): Promise<boolean> {
 // メモを更新するAPI
 export async function updateMemo(id: number, memoContent: string, isPublic: boolean): Promise<MemoLogType | null> {
   try {
-    const response = await fetch('http://localhost:3000/api/memo-log', {
+    const response = await fetch('http://localhost:3000/api/profile', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
