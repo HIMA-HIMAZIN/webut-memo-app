@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { TrashSolid } from 'iconoir-react';
 import { deleteMemo } from '@/utils/profile/api';
 
 interface IndividualPostCardProps {
@@ -68,16 +69,20 @@ export function IndividualPostCard({ id,title, content, path, timeAgo }: Individ
                     open={open}
                     onClose={handleClose}
                     aria-labelledby="with-menu-demo-breadcrumbs"
+                    sx={{
+                      '& .MuiPaper-root': {
+                        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px', // 影を薄く設定
+                      },
+                    }}
                 >
                     <MenuItem onClick={handleDelete} style={{ color: 'red', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        DELETE
-                        <DeleteIcon fontSize="small" style={{ margin: '8px' }} />
+                      <DeleteIcon fontSize="small" />削除する
                     </MenuItem>
                 </Menu>
             </React.Fragment>
         </div>
       </div>
-      <div className="ml-16">
+      <div className="ml-16 mr-5">
         <p className="text-gray-700">{parseContentWithLinks(content)}</p>
       </div>
     </div>
