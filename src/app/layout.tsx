@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-       <body className={ZenKakuGothicNew.className}>{children}</body>
+      <body className={ZenKakuGothicNew.className}>{children}</body>
     </html>
   );
 }

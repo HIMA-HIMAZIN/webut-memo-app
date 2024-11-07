@@ -6,13 +6,17 @@ import { LeftSideBar } from '../components/sidebars/LeftSideBar';
 import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
+import { AccountModal } from '@/components/modals/AccountModal';
 import { formatDistanceToNow } from 'date-fns';
 import { fetchMemos } from '@/utils/public-all/api';
 
 export default function Home() {
   const [memos, setMemos] = useState<MemoLogType[]>([]);
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [isMemoModalOpen, setMemoModalOpen] = useState(false);
+  const [isAccountModalOpen, setAccountModalOpen] = useState(false);
 
+  const isLogin = true; 
+  
   useEffect(() => {
     const getMemos = async () => {
       const memosData = await fetchMemos();
@@ -22,20 +26,26 @@ export default function Home() {
     getMemos();
   }, []);
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
-  };
+  // 各モーダルの開閉関数
+  const openMemoModal = () => setMemoModalOpen(true);
+  const closeMemoModal = () => setMemoModalOpen(false);
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
+  const openAccountModal = () => setAccountModalOpen(true);
+  const closeAccountModal = () => setAccountModalOpen(false);
+
+  const handleAccountModalButtonClick = () => {
+    console.log("Account Modal Button clicked!");
+    closeAccountModal(); // 必要に応じてモーダルを閉じる
   };
 
   return (
+    
     <div className="flex justify-center min-h-screen bg-contentbg">
       <div className="flex w-full max-w-7xl">
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
-          <LeftSideBar onOpenModal={handleOpenModal} />
+          {/* 各モーダルの開く関数をそれぞれ渡す */}
+          <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}  />
         </div>
         
         <div className="w-full md:w-1/2 bg-white">
@@ -58,8 +68,12 @@ export default function Home() {
         </div>
       </div>
 
-      {/* モーダルをルート直下に配置し、常に表示できるようにする */}
-      <MemoModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      {/* 各モーダルを個別に表示 */}
+      <MemoModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
+      <AccountModal 
+        isOpen={isAccountModalOpen} 
+        onClose={closeAccountModal} 
+      />
     </div>
   );
 }
