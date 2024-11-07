@@ -7,7 +7,7 @@ import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
 import { formatDistanceToNow } from 'date-fns';
-import { fetchMemos } from '@/utils/api';
+import { fetchMemos } from '@/utils/public-all/api';
 
 export default function Home() {
   const [memos, setMemos] = useState<MemoLogType[]>([]);

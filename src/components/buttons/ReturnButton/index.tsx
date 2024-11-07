@@ -23,7 +23,7 @@ export function ReturnButton() {
     
       return (
         <button onClick={handleClick} className="flex items-start space-x-2 btn">
-          <NavArrowLeft width={50} height={50} /> 
+          <NavArrowLeft width={40} height={40} /> 
         </button>
       );
     }

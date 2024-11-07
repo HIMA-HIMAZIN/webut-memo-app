@@ -1,0 +1,32 @@
+.arrowBox {
+  position: relative;
+  width: 500px;
+  height: 40px;
+  background: #efefef;
+  padding: 20px;
+  text-align: left;
+  color: #000000;
+  font-size: 14px;
+  border-radius: 25px;
+  display: flex; /* 子要素をフレックスボックスで配置 */
+  align-items: center; /* 縦方向の中央揃え */
+  margin: 20px 10px; 
+}
+
+.arrowBox::after {
+  content: '';
+  position: absolute;
+  border: solid transparent;
+  height: 0;
+  width: 0;
+  pointer-events: none;
+  border-color: rgba(239, 239, 239, 0);
+  border-top-width: 10px;
+  border-bottom-width: 10px;
+  border-left-width: 10px;
+  border-right-width: 10px;
+  margin-left: -10px;
+  border-bottom-color: #efefef;
+  bottom: 100%;
+  left: 10%;
+}
