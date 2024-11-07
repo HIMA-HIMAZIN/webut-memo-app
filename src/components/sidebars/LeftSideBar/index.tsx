@@ -5,6 +5,7 @@ import { Planet, Edit } from 'iconoir-react';
 import Image from 'next/image';
 
 // components
+import {ProfileButton} from '@/components/buttons/ProfileButton';
 import { ActionButton } from "@/components/buttons/ActionButton";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
@@ -20,6 +21,7 @@ export function LeftSideBar({ onOpenModal }: { onOpenModal: () => void }) {
               height={30}
           />
         </div>
+        <ProfileButton title="HIMAZIN"  path = "kitune"/>
         <ActionButton title="みんな" path="/" icon={Planet} />
         <PrimaryButton title="メモする" icon={Edit} onClick={onOpenModal} />
       </div>
