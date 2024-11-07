@@ -5,7 +5,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { TrashSolid } from 'iconoir-react';
 import { deleteMemo } from '@/utils/profile/api';
 
@@ -76,7 +75,7 @@ export function IndividualPostCard({ id,title, content, path, timeAgo }: Individ
                     }}
                 >
                     <MenuItem onClick={handleDelete} style={{ color: 'red', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <DeleteIcon fontSize="small" />削除する
+                      <TrashSolid height={18} width={18} strokeWidth={2} />削除する
                     </MenuItem>
                 </Menu>
             </React.Fragment>
