@@ -6,7 +6,7 @@ type GuideTitleProps = {
 
 export function GuideTitle({ text }: GuideTitleProps) {
   return (
-    <h1 className="text-2xl font-bold">
+    <h1 className="text-5xl font-extrabold">
       {text}
     </h1>
   );
