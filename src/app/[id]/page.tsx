@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { MemoLogType } from '@/types';
 import { Edit } from 'iconoir-react';
@@ -44,7 +45,8 @@ function a11yProps(index: number) {
   };
 }
 
-export default function Profile() {
+export default function Profile({}: { params: { id: string } }) {
+  const { id } = useParams();
   const [memos, setMemos] = useState<MemoLogType[]>([]);
   const [isModalOpen, setModalOpen] = useState(false);
   const [countMemos, setCountMemos] = useState(0);
@@ -85,7 +87,7 @@ export default function Profile() {
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
               <ReturnButton />
-              <div className="text-xl font-bold">パンダ</div>
+              <div className="text-xl font-bold">{id}</div>
             </div>
             <div className='mx-10 my-5'>
               <div className='flex items-center space-x-10'>
