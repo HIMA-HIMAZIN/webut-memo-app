@@ -2,8 +2,8 @@
 
 import React, { useRef, useEffect } from "react";
 import { Xmark } from 'iconoir-react';
-import Script from 'next/script'
 import { createClient } from '@supabase/supabase-js';
+import Script from 'next/script';
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -20,7 +20,8 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 
 declare global {
   interface Window {
-    handleSignInWithGoogle: (response: GoogleSignInResponse) => void;
+    google?: any;
+    handleSignInWithGoogle?: (response: GoogleSignInResponse) => void;
   }
 }
 
@@ -44,30 +45,41 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
   useEffect(() => {
     if (isOpen) {
       window.handleSignInWithGoogle = handleSignInWithGoogle;
-    }
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
+      // Google Sign-In スクリプトのロード
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        if (window.google) {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: window.handleSignInWithGoogle,
+          });
+          window.google.accounts.id.renderButton(
+            document.getElementById('signInButton')!,
+            { theme: 'outline', size: 'large', shape: 'pill' }
+          );
+        }
+      };
+      document.head.appendChild(script);
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+      if (script) {
+        script.remove();
+      }
+      delete window.handleSignInWithGoogle;
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <Script src="https://accounts.google.com/gsi/client" />
       <button
         onClick={onClose}
         className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
