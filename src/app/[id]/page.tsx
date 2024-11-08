@@ -58,12 +58,13 @@ export default function Profile({}: { params: { id: string } }) {
   const imageNumber = 'panda'; // パンダの画像を設定
   const imageUrl = `/images/profile_icon/${imageNumber || 'panda'}.png`; // プレースホルダー画像も設定
   const isLogin = true; 
+  const user_id = "2f5723eb-4820-d2ed-fbd7-0fe0ae6748d2";
   
   useEffect(() => {
     const getMemos = async () => {
-      const memosData = await fetchMemos();
+      const memosData = await fetchMemos(user_id);
       setCountMemos(memosData.length);
-      const sortedMemos = memosData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const sortedMemos = memosData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setMemos(sortedMemos);
     };
     getMemos();
@@ -164,7 +165,7 @@ export default function Profile({}: { params: { id: string } }) {
                     title="パンダ"
                     content={memo.content}
                     path={imageNumber}
-                    timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true })}
+                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true })}
                   />
                 ))}
             </CustomTabPanel>

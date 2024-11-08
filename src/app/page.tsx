@@ -51,7 +51,7 @@ export default function Home() {
                 key={memo.id}
                 title="パンダ"
                 content={memo.content}
-                path={memo.user_id}
+                path="panda"
                 timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
               />
             ))}
