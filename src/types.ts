@@ -4,8 +4,8 @@
 export type MemoLogType = {
     id: number;
     content: string;
-    isPublic: boolean;
-    likeCount: number;
-    createdAt: string;
-    updatedAt: string;
+    is_public: boolean;
+    created_at: string;
+    updated_at: string;
+    user_id: string;
 };

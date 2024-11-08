@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["multiSchema"]
@@ -15,14 +9,28 @@ datasource db {
   schemas  = ["public"]
 }
 
-model MemoLog {
-  id         Int      @id @default(autoincrement()) @db.Integer
-  content    String?  @db.Text
-  isPublic   Boolean  @default(false) @map("is_public") /// 公開・非公開設定
-  likeCount  Int      @default(0) @map("like_count") /// いいねの数
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
-  updatedAt  DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+model Memolog {
+  id         Int      @id @default(autoincrement())
+  content    String?
+  is_public  Boolean  @default(false)
+  like_count Int      @default(0)
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+  user_id    String   @db.Uuid
+  Users      Users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@map("memo_logs")
+  @@schema("public")
+}
+
+model Users {
+  id              String    @id @unique(map: "Users_user_id_key") @db.Uuid
+  display_name    String    @default("初見さん")
+  profile_picture Int       @default(1)
+  bio             String?   @default("")
+  created_at      DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime  @default(now()) @db.Timestamptz(6)
+  user_neme       String    @unique(map: "Users_user_id_key1")
+  Memolog         Memolog[]
+
   @@schema("public")
 }
