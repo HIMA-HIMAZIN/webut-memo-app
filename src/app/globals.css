@@ -13,6 +13,10 @@
     --foreground: #ededed;
   }
 } */
+ 
+* {
+  font-family: 'Zen Kaku Gothic Antique', sans-serif !important;
+}
 
 body {
   color: var(--foreground);

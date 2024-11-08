@@ -21,9 +21,9 @@ export function LeftSideBar({ isLogin, onMemoModal, onOpenModal }: LeftSideBarPr
   const buttonAction = isLogin ? onMemoModal : onOpenModal;
 
   return (
-    <div className="pl-8 pt-8">
+    <div className="pt-8">
       <div>
-        <div className="mb-5">
+        <div className="mb-5 ml-4">
           <Image
               src="/icons/club-icon.svg"
               alt="Example Image"
@@ -31,9 +31,9 @@ export function LeftSideBar({ isLogin, onMemoModal, onOpenModal }: LeftSideBarPr
               height={30}
           />
         </div>
-        <ProfileButton title="HIMAZIN"  path = "kitune"/>
+        <ProfileButton title="HIMAZIN"  path = "kitune" hideTextOnSmallScreen={true}/>
         <ActionButton title="みんな" path="/" icon={Planet} />
-        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} />
+        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true}/>
       </div>
     </div>
     

@@ -9,13 +9,14 @@ import { MemoModal } from '@/components/modals/MemoModal';
 import { AccountModal } from '@/components/modals/AccountModal';
 import { formatDistanceToNow } from 'date-fns';
 import { fetchMemos } from '@/utils/whole/api';
+import { ja } from 'date-fns/locale'; 
 
 export default function Home() {
   const [memos, setMemos] = useState<MemoLogType[]>([]);
   const [isMemoModalOpen, setMemoModalOpen] = useState(false);
   const [isAccountModalOpen, setAccountModalOpen] = useState(false);
 
-  const isLogin = true; 
+  const isLogin = false; 
   
   useEffect(() => {
     const getMemos = async () => {
@@ -33,22 +34,16 @@ export default function Home() {
   const openAccountModal = () => setAccountModalOpen(true);
   const closeAccountModal = () => setAccountModalOpen(false);
 
-  const handleAccountModalButtonClick = () => {
-    console.log("Account Modal Button clicked!");
-    closeAccountModal(); // 必要に応じてモーダルを閉じる
-  };
-
   return (
     
     <div className="flex justify-center min-h-screen bg-contentbg">
       <div className="flex w-full max-w-7xl">
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
-          {/* 各モーダルの開く関数をそれぞれ渡す */}
           <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}  />
         </div>
-        
-        <div className="w-full md:w-1/2 bg-white">
+
+        <div className="md:w-1/2 bg-white md:min-w-[640px]">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">
             {memos.map((memo: MemoLogType) => (
@@ -57,13 +52,13 @@ export default function Home() {
                 title="パンダ"
                 content={memo.content}
                 path="panda"
-                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true })}
+                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true, locale: ja })}
               />
             ))}
           </div>
         </div>
         
-        <div className="hidden md:block w-1/4 bg-contentbg p-4">
+        <div className="hidden md:block flex-grow bg-contentbg p-4">
           右サイド
         </div>
       </div>

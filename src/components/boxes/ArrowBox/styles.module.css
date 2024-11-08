@@ -1,6 +1,6 @@
 .arrowBox {
   position: relative;
-  width: 500px;
+  width: 100%;
   height: 40px;
   background: #efefef;
   padding: 20px;
@@ -10,7 +10,7 @@
   border-radius: 25px;
   display: flex; /* 子要素をフレックスボックスで配置 */
   align-items: center; /* 縦方向の中央揃え */
-  margin: 20px 10px; 
+  margin: 20px 0px; 
 }
 
 .arrowBox::after {
