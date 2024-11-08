@@ -24,14 +24,14 @@ export async function fetchMemos(user_id: string): Promise<MemoLogType[]> {
 
 
 //　メモを投稿するAPI
-export async function postMemo(memoContent: string, isPublic : boolean , user_id : string): Promise<MemoLogType | null> {
+export async function postMemo(memoContent: string, isPublic : boolean): Promise<MemoLogType | null> {
   try {
     const response = await fetch('http://localhost:3000/api/profile', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ content: memoContent ,is_public:isPublic , user_id : user_id}),
+      body: JSON.stringify({ content: memoContent ,is_public:isPublic}),
     });
     if (!response.ok) {
       throw new Error("Failed to post memo");
