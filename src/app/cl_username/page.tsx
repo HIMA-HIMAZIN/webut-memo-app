@@ -28,7 +28,7 @@ const CreateUserName = () => {
         {/* テキストボックスの表示 */}
         
         <Box sx={{ width: '40%', mt: 20 }}>
-          <TextField fullWidth label="username" id="fullWidth" />
+          <TextField fullWidth label="ユーザーネーム" id="fullWidth" />
         </Box>
       </div>
     </div>

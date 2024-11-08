@@ -98,9 +98,9 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
         ref={modalRef}
         className="bg-white p-6 rounded-3xl shadow-lg w-4/5 max-w-screen-md max-h-screen-md  h-3/5 flex flex-col"
       >
-        <div className="flex items-center justify-around m-2">
+        <div className="flex items-center justify-between m-2">
           <h2 className="text-xl font-bold">Memo</h2>
-          <div className="flex items-center justify-center">
+          <div className="flex items-center">
             <IconText text="公開する" icon={Planet} />
             <IosSwitcheButton checked={isPublic} onChange={handleSwitchChange} />
           </div>
@@ -119,12 +119,13 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
           </span>
         </div>
       </div>
-      <div className="fixed bottom-10 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
+      <div className="fixed bottom-20 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
         <PrimaryButton 
           title="メモする" 
           icon={Edit} 
           onClick={handleSubmit} 
-          disabled={error !== null || memo.length === 0} 
+          disabled={error !== null || memo.length === 0}
+          hideTextOnSmallScreen={false}
         />
       </div>
     </div>
