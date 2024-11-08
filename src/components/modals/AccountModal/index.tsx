@@ -80,6 +80,7 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <Script src="https://accounts.google.com/gsi/client" async defer></Script>
       <button
         onClick={onClose}
         className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
