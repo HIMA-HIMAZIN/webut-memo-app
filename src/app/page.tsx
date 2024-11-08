@@ -8,8 +8,8 @@ import ReloadButton from '../components/buttons/ReloadButton';
 import { MemoModal } from '@/components/modals/MemoModal';
 import { AccountModal } from '@/components/modals/AccountModal';
 import { formatDistanceToNow } from 'date-fns';
+import { fetchMemos } from '@/utils/whole/api';
 import { ja } from 'date-fns/locale'; 
-import { fetchMemos } from '@/utils/public-all/api';
 
 export default function Home() {
   const [memos, setMemos] = useState<MemoLogType[]>([]);

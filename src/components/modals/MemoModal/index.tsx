@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Xmark } from 'iconoir-react';
+import { Xmark } from "iconoir-react";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { Planet, Edit } from 'iconoir-react';
-import { postMemo } from '@/utils/profile/api';
-import { IconText } from '@/components/headers/IconText';
-import  IosSwitcheButton  from '@/components/buttons/IosSwitchButton';
+import { Planet, Edit } from "iconoir-react";
+import { postMemo } from "@/utils/profile/api";
+import { IconText } from "@/components/headers/IconText";
+import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
+import { filterProfanity } from "@/filters/profanityFilter";
 
 const MAX_CHAR_LIMIT = 150;
 
@@ -69,6 +70,11 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   };
 
   const handleSubmit = async () => {
+    if (filterProfanity(memo)) {
+      setError("禁止ワードが含まれています。");
+      return;
+    }
+
     try {
       const result = await postMemo(memo, isPublic);
       if (result) {
@@ -96,7 +102,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
       </button>
       <div
         ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-4/5 max-w-screen-md max-h-screen-md  h-3/5 flex flex-col"
+        className="bg-white p-6 rounded-3xl shadow-lg w-4/5 max-w-screen-md max-h-screen-md h-3/5 flex flex-col"
       >
         <div className="flex items-center justify-between m-2">
           <h2 className="text-xl font-bold">Memo</h2>
