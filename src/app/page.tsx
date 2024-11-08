@@ -21,7 +21,7 @@ export default function Home() {
   useEffect(() => {
     const getMemos = async () => {
       const memosData = await fetchMemos();
-      const sortedMemos = memosData.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      const sortedMemos = memosData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setMemos(sortedMemos);
     };
     getMemos();
@@ -51,8 +51,8 @@ export default function Home() {
                 key={memo.id}
                 title="パンダ"
                 content={memo.content}
-                path="panda"
-                timeAgo={formatDistanceToNow(new Date(memo.createdAt), { addSuffix: true, locale: ja })}
+                path={memo.user_id}
+                timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
               />
             ))}
           </div>

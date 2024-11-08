@@ -15,9 +15,9 @@ export async function main(){
 export const GET = async (req: Request, res: NextResponse) => {
      try {
           await main();
-          const memos = await prisma.memoLog.findMany({
+          const memos = await prisma.memolog.findMany({
               where: {
-                  isPublic: true,
+                  is_public: true,
               },
           });
           return NextResponse.json({ message: 'success', memos }, { status: 200 });
