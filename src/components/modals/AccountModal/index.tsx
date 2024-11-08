@@ -24,7 +24,7 @@ declare global {
     handleSignInWithGoogle?: (response: GoogleSignInResponse) => void;
   }
 }
-
+//ログイン処理
 export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +46,6 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
     if (isOpen) {
       window.handleSignInWithGoogle = handleSignInWithGoogle;
 
-      // Google Sign-In スクリプトのロード
       const script = document.createElement('script');
       script.src = 'https://accounts.google.com/gsi/client';
       script.async = true;
@@ -66,6 +65,14 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
       document.head.appendChild(script);
     }
 
+    // モーダル外クリックで閉じる処理
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
       if (script) {
@@ -79,37 +86,49 @@ export function AccountModal ({ isOpen, onClose }: AccountModalProps) {
 
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <Script src="https://accounts.google.com/gsi/client" async defer></Script>
-      <button
-        onClick={onClose}
-        className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
-      >
-        <Xmark height={40} width={40} strokeWidth={2} />
-      </button>
-      <div
-        ref={modalRef}
-        className="bg-white p-6 rounded-3xl shadow-lg w-4/5 max-w-md h-1/3 flex flex-col items-center justify-center"
-      >
-        <h2 className="text-xl font-bold mb-4">ログイン</h2>
+<div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+  <Script src="https://accounts.google.com/gsi/client" async defer></Script>
+  
+  <button
+    onClick={onClose}
+    className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
+  >
+    <Xmark height={40} width={40} strokeWidth={2} />
+  </button>
 
-        <div id="g_id_onload"
-            data-client_id={clientId}
-            data-context="signin"
-            data-ux_mode="popup"
-            data-callback="handleSignInWithGoogle"
-            data-auto_prompt="false">
-        </div>
-
-        <div className="g_id_signin"
-            data-type="standard"
-            data-shape="pill"
-            data-theme="outline"
-            data-text="signin_with"
-            data-size="x-large"
-            data-logo_alignment="left">
-        </div>
-      </div>
+  <div
+    ref={modalRef}
+    className="bg-white p-8 rounded-3xl shadow-lg w-4/5 max-w-md h-auto flex flex-col items-center"
+  >
+    {/* Header and Description */}
+    <div className="text-center mb-8">
+      <h2 className="text-3xl font-extrabold text-gray-800">はじめる</h2>
+      <p className="text-gray-600 mt-4">
+        あなたの独り言
+      </p>
     </div>
+
+    {/* Google Sign-In Button */}
+    <div className="scale-150 mb-4">
+      <div
+        id="g_id_onload"
+        data-client_id={clientId}
+        data-context="signin"
+        data-ux_mode="popup"
+        data-callback="handleSignInWithGoogle"
+        data-auto_prompt="false"
+      ></div>
+      <div
+        className="g_id_signin"
+        data-type="standard"
+        data-shape="pill"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left"
+      ></div>
+    </div>
+  </div>
+</div>
   );
 }
