@@ -18,7 +18,8 @@ interface MemoModalProps {
 
 export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const buttonWrapperRef = useRef<HTMLDivElement>(null);
   const [memo, setMemo] = useState("");
   const [isPublic, setIsPublic] = useState(false);
 
@@ -27,7 +28,14 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node) && buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node) &&
+        closeButtonRef.current &&
+        !closeButtonRef.current.contains(event.target as Node) &&
+        buttonWrapperRef.current &&
+        !buttonWrapperRef.current.contains(event.target as Node)
+      ) {
         onClose();
       }
     };
@@ -95,6 +103,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <button
+        ref={closeButtonRef}
         onClick={onClose}
         className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
       >
@@ -125,7 +134,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
           </span>
         </div>
       </div>
-      <div className="fixed bottom-20 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
+      <div ref={buttonWrapperRef} className="fixed bottom-20 w-2/12 flex justify-center items-center z-50 xl:w-3/12">
         <PrimaryButton 
           title="メモする" 
           icon={Edit} 
