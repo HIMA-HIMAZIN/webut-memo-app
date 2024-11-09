@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { WarningTriangleSolid } from 'iconoir-react';
+import supabase from '@/utils/supabase/Client';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -36,6 +37,16 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+    // ログアウト処理
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error('Logout error:', error.message);
+        } else {
+          onClose(); 
+        }
+      };
 
   if (!isOpen) {
     return null;
@@ -82,7 +93,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           <p className="mt-2">
             サービスからログアウトします。再度ログインするには、ログイン画面に戻る必要があります。
           </p>
-          <button className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white">
+          <button className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white"  onClick={handleLogout}>
             ログアウト
           </button>
         </div>

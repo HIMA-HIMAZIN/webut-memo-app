@@ -9,17 +9,13 @@ import {ProfileButton} from '@/components/buttons/ProfileButton';
 import { ActionButton } from "@/components/buttons/ActionButton";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
+// modals
 import { MemoModal } from '@/components/modals/MemoModal';
 import { AccountModal } from '@/components/modals/AccountModal';
 import SettingsModal from "@/components/modals/SettingsModal";
 
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
+// utils
+import supabase from "@/utils/supabase/Client";
 
 export function LeftSideBar() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -62,8 +58,8 @@ export function LeftSideBar() {
   const buttonAction = isLogin ? () => setIsMemoModalOpen(true) : () => setIsAccountModalOpen(true);
 
   const openSettingsModal = () => setIsSettingsModalOpen(true);
+  
   const closeSettingsModal = () => setIsSettingsModalOpen(false);
-
   const closeMemoModal = () => setIsMemoModalOpen(false);
   const closeAccountModal = () => setIsAccountModalOpen(false);
 
@@ -78,10 +74,14 @@ export function LeftSideBar() {
               height={30}
           />
         </div>
-        <ProfileButton title="HIMAZIN"  path = "kitune" hideTextOnSmallScreen={true}/>
+        {isLogin && (
+          <ProfileButton title="HIMAZIN"  path = "kitune" hideTextOnSmallScreen={true}/>
+        )}
         <ActionButton title="みんな" path="/" icon={Planet} />
         <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true}/>
-        <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal}/>
+        {isLogin && (
+          <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal}/>
+        )}
       </div>
       <SettingsModal isOpen={isSettingsModalOpen} onClose={closeSettingsModal} />
       <MemoModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
