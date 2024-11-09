@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { WarningTriangleSolid } from 'iconoir-react';
 import supabase from '@/utils/supabase/Client';
 
@@ -9,6 +9,32 @@ interface SettingsModalProps {
 
 const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
+  const [userAvatar, setUserAvatar] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    // モーダルが開いたときにユーザー情報を取得
+    useEffect(() => {
+        const getUserInfo = async () => {
+            setIsLoading(true);
+            const { data, error } = await supabase.auth.getUser();
+            if (error) {
+                console.error('Error fetching user info:', error.message);
+            } else if (data.user) {
+                setUserEmail(data.user.email || '');
+                // Google認証の場合、ユーザー名は user_metadata に含まれています
+                const { full_name, name, avatar_url } = data.user.user_metadata;
+                setUserName(full_name || name || '');
+                setUserAvatar(avatar_url || '');
+            }
+            setIsLoading(false);
+        };
+    
+        if (isOpen) {
+          getUserInfo();
+        }
+      }, [isOpen]);
 
   // モーダル外クリックとEscキーで閉じる処理
   useEffect(() => {
@@ -77,23 +103,33 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <div className="pt-4">
-          <h1 className="py-2 text-2xl font-semibold">アカウント</h1>
+        <p className="py-2 text-2xl font-semibold mt-4 mb-4">アカウント</p>
+        <div className="flex items-center space-x-4">
+          {userAvatar && (
+            <img
+              src={userAvatar}
+              alt={`${userName}のプロフィール画像`}
+              className="w-12 h-12 rounded-full"
+            />
+          )}
+          <div>
+            {isLoading ? (
+              <p className="text-gray-600">読み込み中...</p>
+            ) : (
+              <>
+                <p className="text-xl font-semibold">{userName || 'ユーザー名未設定'}</p>
+                <p className="text-gray-500">{userEmail || 'メールアドレス未設定'}</p>
+              </>
+            )}
+          </div>
         </div>
-        <hr className="mt-4 mb-8" />
-        <p className="py-2 text-xl font-semibold">Email Address</p>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-gray-600">
-            Your email address is 
-          </p>
-        </div>
-        <hr className="mt-4 mb-8" />
+        <hr className="mt-8 mb-8" />
         <div className="mb-10">
           <p className="py-2 text-xl font-semibold">ログアウト</p>
           <p className="mt-2">
             サービスからログアウトします。再度ログインするには、ログイン画面に戻る必要があります。
           </p>
-          <button className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white"  onClick={handleLogout}>
+          <button className="mt-4 rounded-lg bg-red-600 px-4 py-2 hover:bg-red-700 text-white"  onClick={handleLogout}>
             ログアウト
           </button>
         </div>
