@@ -17,7 +17,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     try {
         const { id, userId } = await req.json();
         await main();
-        const updatedMemo = await prisma..update({
+        const updatedMemo = await prisma.memoLog.update({
             where: {
                 id: id,
             },

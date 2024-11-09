@@ -8,6 +8,7 @@ import Script from 'next/script';
 interface AccountModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onLogin: () => void;
 }
 
 interface GoogleSignInResponse {
@@ -37,7 +38,7 @@ declare global {
 }
 
 // ログイン処理
-export function AccountModal({ isOpen, onClose }: AccountModalProps) {
+export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleSignInWithGoogle = useCallback(
@@ -51,10 +52,11 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
         console.error('Google Sign-In error:', error.message);
       } else {
         console.log('User signed in:', data);
+        onLogin();
         onClose(); // サインイン後にモーダルを閉じる
       }
     },
-    [onClose]
+    [ onLogin, onClose]
   );
 
   useEffect(() => {
@@ -104,7 +106,6 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <Script src="https://accounts.google.com/gsi/client" async defer></Script>
-
       <button
         onClick={onClose}
         className="absolute top-7 right-7 text-white text-2xl font-bold z-50"
@@ -116,7 +117,6 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
         ref={modalRef}
         className="bg-white p-8 rounded-3xl shadow-lg w-4/5 max-w-md h-auto flex flex-col items-center"
       >
-        {/* ヘッダーと説明 */}
         <div className="text-center mb-8">
           <h2 className="text-3xl font-extrabold text-gray-800">はじめる</h2>
           <p className="text-gray-600 mt-4">
@@ -124,7 +124,6 @@ export function AccountModal({ isOpen, onClose }: AccountModalProps) {
           </p>
         </div>
 
-        {/* Google サインインボタン */}
         <div className="scale-150 mb-4">
           <div
             id="g_id_onload"

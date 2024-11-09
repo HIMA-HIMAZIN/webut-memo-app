@@ -55,9 +55,9 @@ export default function Profile({}: { params: { id: string } }) {
   const [isAccountModalOpen, setAccountModalOpen] = useState(false);
   const [countMemos, setCountMemos] = useState(0);
   const [value, setValue] = React.useState(0);
+  const [isLogin, setIsLogin] = useState(false);
   const imageNumber = 'panda'; // パンダの画像を設定
   const imageUrl = `/images/profile_icon/${imageNumber || 'panda'}.png`; // プレースホルダー画像も設定
-  const isLogin = true; 
   const user_id = "2f5723eb-4820-d2ed-fbd7-0fe0ae6748d2";
   
   useEffect(() => {
@@ -79,6 +79,8 @@ export default function Profile({}: { params: { id: string } }) {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+ 
 
   return (
     <div className="flex justify-center min-h-screen bg-contentbg">
@@ -185,6 +187,7 @@ export default function Profile({}: { params: { id: string } }) {
       <AccountModal 
         isOpen={isAccountModalOpen} 
         onClose={closeAccountModal} 
+        onLogin={() => setIsLogin(true)}
       />
     </div>
   );
