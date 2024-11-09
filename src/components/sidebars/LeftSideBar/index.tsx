@@ -80,7 +80,7 @@ export function LeftSideBar() {
         <ActionButton title="みんな" path="/" icon={Planet} />
         <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true}/>
         {isLogin && (
-          <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal}/>
+          <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal} hideTextOnSmallScreen={true}/>
         )}
       </div>
       <SettingsModal isOpen={isSettingsModalOpen} onClose={closeSettingsModal} />
