@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { WarningTriangleSolid } from 'iconoir-react';
 
 interface SettingsModalProps {
@@ -51,7 +51,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         ref={modalRef}
         className="relative bg-white rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow-lg max-w-screen-xl mx-4 p-6"
       >
-        {/* 閉じるボタン */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -67,7 +66,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        {/* コンテンツ */}
         <div className="pt-4">
           <h1 className="py-2 text-2xl font-semibold">アカウント</h1>
         </div>
@@ -84,9 +82,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           <p className="mt-2">
             サービスからログアウトします。再度ログインするには、ログイン画面に戻る必要があります。
           </p>
-          <button
-            className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white"
-          >
+          <button className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-white">
             ログアウト
           </button>
         </div>

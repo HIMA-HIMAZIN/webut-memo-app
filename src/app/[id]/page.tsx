@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { MemoLogType } from '@/types';
 import { Edit } from 'iconoir-react';
 import { LeftSideBar } from '@/components/sidebars/LeftSideBar';
+import { RightSideBar } from '@/components/sidebars/RightSideBar';
 import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import ArrowBox from '@/components/boxes/ArrowBox';
@@ -167,9 +168,7 @@ export default function Profile({}: { params: { id: string } }) {
             </CustomTabPanel>
           </div>
         </div>
-        <div className="hidden md:block flex-grow bg-contentbg p-4">
-          右サイド
-        </div>
+        <RightSideBar/>
       </div>
     </div>
   );

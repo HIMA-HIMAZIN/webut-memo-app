@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MemoLogType } from '@/types';
 import { LeftSideBar } from '../components/sidebars/LeftSideBar';
+import { RightSideBar } from '../components/sidebars/RightSideBar';
 import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { formatDistanceToNow } from 'date-fns';
@@ -43,8 +44,8 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="hidden md:block flex-grow bg-contentbg p-4">
-          右サイド
+        <div className="hidden md:block w-1/4 bg-contentbg p-4">
+          <RightSideBar/>
         </div>
       </div>
     </div>
