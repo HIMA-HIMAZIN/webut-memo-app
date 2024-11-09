@@ -6,10 +6,9 @@ import Image from 'next/image';
 import { MemoLogType } from '@/types';
 import { Edit } from 'iconoir-react';
 import { LeftSideBar } from '@/components/sidebars/LeftSideBar';
+import { RightSideBar } from '@/components/sidebars/RightSideBar';
 import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
-import { MemoModal } from '@/components/modals/MemoModal';
-import { AccountModal } from '@/components/modals/AccountModal';
 import ArrowBox from '@/components/boxes/ArrowBox';
 
 
@@ -51,13 +50,10 @@ function a11yProps(index: number) {
 export default function Profile({}: { params: { id: string } }) {
   const { id } = useParams();
   const [memos, setMemos] = useState<MemoLogType[]>([]);
-  const [isMemoModalOpen, setMemoModalOpen] = useState(false);
-  const [isAccountModalOpen, setAccountModalOpen] = useState(false);
   const [countMemos, setCountMemos] = useState(0);
   const [value, setValue] = React.useState(0);
   const imageNumber = 'panda'; // パンダの画像を設定
   const imageUrl = `/images/profile_icon/${imageNumber || 'panda'}.png`; // プレースホルダー画像も設定
-  const isLogin = true; 
   const user_id = "2f5723eb-4820-d2ed-fbd7-0fe0ae6748d2";
   
   useEffect(() => {
@@ -70,24 +66,19 @@ export default function Profile({}: { params: { id: string } }) {
     getMemos();
   }, []);
 
-  const openMemoModal = () => setMemoModalOpen(true);
-  const closeMemoModal = () => setMemoModalOpen(false);
-
-  const openAccountModal = () => setAccountModalOpen(true);
-  const closeAccountModal = () => setAccountModalOpen(false);
-
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+ 
 
   return (
     <div className="flex justify-center min-h-screen bg-contentbg">
       <div className="flex w-full max-w-7xl">
         
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
-          <LeftSideBar onOpenModal={openAccountModal} onMemoModal={openMemoModal}  isLogin={isLogin}/>
+          <LeftSideBar/>
         </div>
-        
         <div className="md:w-1/2 bg-white md:min-w-[640px]">
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
@@ -177,15 +168,8 @@ export default function Profile({}: { params: { id: string } }) {
             </CustomTabPanel>
           </div>
         </div>
-        <div className="hidden md:block flex-grow bg-contentbg p-4">
-          右サイド
-        </div>
+        <RightSideBar/>
       </div>
-      <MemoModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
-      <AccountModal 
-        isOpen={isAccountModalOpen} 
-        onClose={closeAccountModal} 
-      />
     </div>
   );
 }
