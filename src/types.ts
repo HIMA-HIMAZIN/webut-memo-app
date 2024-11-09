@@ -9,4 +9,16 @@ export type MemoLogType = {
     like_count: number;
     created_at: string;
     updated_at: string;
+    Users: UserType; // 関連するユーザー情報を含むフィールド
 };
+
+export type UserType = {
+    id: string;
+    display_name: string;
+    profile_picture: number;
+    bio?: string;
+    created_at: string;
+    updated_at: string;
+    user_neme: string;
+};
+
