@@ -45,9 +45,9 @@ export const GET = async (req: Request, res: NextResponse) => {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const POST= async (req: Request, res: NextResponse) => {
     try{
-         const {content,is_public} = await req.json();//ここではコンテンツと公開設定のみを受け取ります。必要ならば他の情報も受け取ることができます。
+         const {content,is_public,user_id} = await req.json();//ここではコンテンツと公開設定のみを受け取ります。必要ならば他の情報も受け取ることができます。
          await main();
-         const post = await prisma.memolog.create({data:{content,is_public}});
+         const post = await prisma.memolog.create({data:{content,is_public,user_id}});
          return NextResponse.json({ message: 'success', post }, { status: 201 });
     }catch(e){
          return NextResponse.json({ message: 'error', e }, { status: 500 });
