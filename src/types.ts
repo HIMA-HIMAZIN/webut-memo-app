@@ -9,7 +9,7 @@ export type MemoLogType = {
     like_count: number;
     created_at: string;
     updated_at: string;
-    Account: AccountType; // 関連するユーザー情報を含むフィールド
+    account: AccountType; // 関連するユーザー情報を含むフィールド
 };
 
 export type AccountType = {
@@ -19,6 +19,6 @@ export type AccountType = {
     bio?: string;
     created_at: string;
     updated_at: string;
-    user_neme: string;
+    user_name: string;
 };
 
