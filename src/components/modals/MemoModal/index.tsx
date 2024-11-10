@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Xmark } from "iconoir-react";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Planet, Edit } from "iconoir-react";
-import { postMemo } from "@/utils/profile/api";
+import { postMemo } from "@/utils/IndividualMemo/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
 import { filterProfanity } from "@/filters/profanityFilter";
@@ -96,7 +96,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     }
 
     try {
-      const result = await postMemo(memo, isPublic, userId);
+      const result = await postMemo(memo, isPublic, userId!);
       if (result) {
         window.location.reload();
         setMemo("");

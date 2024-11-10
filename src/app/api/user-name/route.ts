@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
-//これはAccountテーブルのuser_nameを元にユーザー情報を取得するAPIです。
+//これはAccountテーブルのidを元にユーザー情報を取得するAPIです。
 
 const prisma = new PrismaClient();
 
@@ -26,7 +26,7 @@ export const GET = async (req: Request) => {
 
     const user = await prisma.account.findUnique({
       where: {
-        user_name: user_id,
+        id: user_id,
       },
     });
 

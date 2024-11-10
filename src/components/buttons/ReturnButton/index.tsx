@@ -17,7 +17,7 @@ export function ReturnButton() {
         if (canGoBack) {
           router.back(); 
         } else {
-          router.push('/home'); // 戻るページがなければ `/home` に遷移
+          router.push('/'); // 戻るページがなければ `/home` に遷移
         }
       };
     

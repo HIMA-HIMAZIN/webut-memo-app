@@ -5,7 +5,7 @@ import { Planet, Edit, LogIn, Settings } from 'iconoir-react';
 import Image from 'next/image';
 
 // components
-import {ProfileButton} from '@/components/buttons/ProfileButton';
+import { ProfileButton } from '@/components/buttons/ProfileButton';
 import { ActionButton } from "@/components/buttons/ActionButton";
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
@@ -16,12 +16,18 @@ import SettingsModal from "@/components/modals/SettingsModal";
 
 // utils
 import supabase from "@/utils/supabase/Client";
+import {fetchUserName} from "@/utils/useName/api";
+
+// types
+import { AccountType } from "@/types";
 
 export function LeftSideBar() {
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [isMemoModalOpen, setIsMemoModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null); // userId を追加
+  const [userData, setUserData]= useState<AccountType | null>(null);
 
   useEffect(() => {
     // セッションをチェックしてログイン状態を設定
@@ -42,6 +48,7 @@ export function LeftSideBar() {
           setIsLogin(true);
         } else if (event === 'SIGNED_OUT') {
           setIsLogin(false);
+          setUserId(null); // ログアウト時に userId をリセット
         }
       }
     );
@@ -52,6 +59,23 @@ export function LeftSideBar() {
     };
   }, []);
 
+  useEffect(() => {
+    // ログイン時にユーザーIDを取得
+    const getUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('Failed to get user:', error.message);
+      } else if (user) {
+        setUserId(user.id); // userId を設定
+        const fetchedUserName = await fetchUserName(user.id); // UserName 関数を呼び出し
+        setUserData(fetchedUserName); // user_name を設定
+      }
+    };
+
+    if (isLogin) {
+      getUser();
+    }
+  }, [isLogin]); // isLogin が true の時のみ実行
 
   const buttonTitle = isLogin ? "メモする" : "ログイン";
   const buttonIcon = isLogin ? Edit : LogIn;
@@ -74,13 +98,13 @@ export function LeftSideBar() {
               height={30}
           />
         </div>
-        {isLogin && (
-          <ProfileButton title="HIMAZIN"  path = "kitune" hideTextOnSmallScreen={true}/>
+        {isLogin && userId && (
+          <ProfileButton title={userData?.display_name ?? "不明さん"}  path={userData?.user_name ?? "nobody"} hideTextOnSmallScreen={true} icon_number={userData?.profile_picture ?? 1} />
         )}
         <ActionButton title="みんな" path="/" icon={Planet} />
-        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true}/>
+        <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true} />
         {isLogin && (
-          <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal} hideTextOnSmallScreen={true}/>
+          <PrimaryButton title="設定" icon={Settings} onClick={openSettingsModal} hideTextOnSmallScreen={true} />
         )}
       </div>
       <SettingsModal isOpen={isSettingsModalOpen} onClose={closeSettingsModal} />
@@ -91,6 +115,5 @@ export function LeftSideBar() {
         onLogin={() => setIsLogin(true)}
       />
     </div>
-    
   );
 }

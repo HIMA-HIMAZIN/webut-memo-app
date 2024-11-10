@@ -22,6 +22,9 @@ export const GET = async (req: Request, res: NextResponse) => {
               include: {
                 account: { 
                   select: {
+                    user_name: true,
+                    profile_picture: true,
+                    bio: true,
                     display_name: true,
                   },
                 },

@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { TrashSolid } from 'iconoir-react';
-import { deleteMemo } from '@/utils/profile/api';
+import { deleteMemo } from '@/utils/IndividualMemo/api';
 
 interface IndividualPostCardProps {
   id : number;
@@ -14,6 +14,7 @@ interface IndividualPostCardProps {
   content: string;
   path: string;
   timeAgo: string;
+  icon_nuber: number;
 }
 
 const parseContentWithLinks = (text: string) => {
@@ -32,7 +33,7 @@ const parseContentWithLinks = (text: string) => {
   });
 };
 
-export function IndividualPostCard({ id,title, content, path, timeAgo }: IndividualPostCardProps) {
+export function IndividualPostCard({ id,title, content, path, timeAgo ,icon_nuber}: IndividualPostCardProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const open = Boolean(anchorEl);
 
@@ -54,7 +55,7 @@ export function IndividualPostCard({ id,title, content, path, timeAgo }: Individ
   return (
     <div className="w-full bg-white pb-4 border-b border-gray-200">
       <div className="flex justify-between items-center">
-        <ProfileButton title={title} path={path} />
+        <ProfileButton title={title} path={path} icon_number = {icon_nuber} />
         <div className='flex items-center justify-center pr-5'>
             <span className="text-base p-3 pr-5 text-gray-500">{timeAgo}</span>
             <React.Fragment>

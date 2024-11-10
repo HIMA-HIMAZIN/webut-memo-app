@@ -1,10 +1,10 @@
 import { AccountType } from '@/types';
 
-//これはAccountテーブルのuser_nameを元にユーザー情報を取得するAPIです。
+//これはAccountテーブルのidを元にユーザー情報を取得するAPIです。
 
-export async function fetchUser(id: string): Promise<AccountType | null> {
+export async function fetchUserName(id: string): Promise<AccountType | null> {
   try {
-    const response = await fetch(`http://localhost:3000/api/profile?user_id=${id}`, {
+    const response = await fetch(`http://localhost:3000/api/user-name?user_id=${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
