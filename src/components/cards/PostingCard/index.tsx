@@ -6,6 +6,7 @@ interface PostCardProps {
   content: string;
   path: string;
   timeAgo: string;
+  icon_number: number;
 }
 
 const parseContentWithLinks = (text: string) => {
@@ -24,11 +25,11 @@ const parseContentWithLinks = (text: string) => {
   });
 };
 
-export function PostCard({ title, content, path, timeAgo }: PostCardProps) {
+export function PostCard({ title, content, path, timeAgo, icon_number }: PostCardProps) {
   return (
     <div className="w-full bg-white pb-4 border-b border-gray-200">
       <div className="flex justify-between items-center">
-        <ProfileButton title={title} path={path} />
+        <ProfileButton title={title} path={path} icon_number={icon_number} />
         <span className="text-base p-3 pr-5 text-gray-500">{timeAgo}</span>
       </div>
       <div className="ml-16 mr-24">
