@@ -30,13 +30,13 @@ export default function Home() {
           <LeftSideBar />
         </div>
 
-        <div className="w-fullmd:w-1/2 md:min-w-[640px] bg-white">
+        <div className="w-full md:w-1/2 md:min-w-[640px] bg-white">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">
             {memos.map((memo: MemoLogType) => (
               <PostCard
                 key={memo.id}
-                title="パンダ"
+                title={memo.account?.display_name || "No Name"}
                 content={memo.content}
                 path="panda"
                 timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
