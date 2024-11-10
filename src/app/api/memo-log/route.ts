@@ -19,6 +19,13 @@ export const GET = async (req: Request, res: NextResponse) => {
               where: {
                   is_public: true,
               },
+              include: {
+                account: { 
+                  select: {
+                    display_name: true,
+                  },
+                },
+              },
           });
           return NextResponse.json({ message: 'success', memos }, { status: 200 });
      } catch (e) {

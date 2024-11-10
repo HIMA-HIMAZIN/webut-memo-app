@@ -8,6 +8,7 @@ import { postMemo } from "@/utils/profile/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
 import { filterProfanity } from "@/filters/profanityFilter";
+import supabase from "@/utils/supabase/Client";
 
 const MAX_CHAR_LIMIT = 150;
 
@@ -22,9 +23,20 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
   const [memo, setMemo] = useState("");
   const [isPublic, setIsPublic] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [error, setError] = useState<string | null>(null);
   const [displayLength, setDisplayLength] = useState(0);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id); // userId を設定
+      }
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,7 +96,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     }
 
     try {
-      const result = await postMemo(memo, isPublic);
+      const result = await postMemo(memo, isPublic, userId);
       if (result) {
         window.location.reload();
         setMemo("");
