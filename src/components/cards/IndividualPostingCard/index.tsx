@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { TrashSolid } from 'iconoir-react';
-import { deleteMemo } from '@/utils/profile/api';
+import { deleteMemo } from '@/utils/IndividualMemo/api';
 
 interface IndividualPostCardProps {
   id : number;

@@ -3,20 +3,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { MemoLogType } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
+import { ja } from 'date-fns/locale';
+
+//packages
 import { Edit } from 'iconoir-react';
+import { Tabs, Tab, Box } from '@mui/material';
+
+//components
 import { LeftSideBar } from '@/components/sidebars/LeftSideBar';
 import { RightSideBar } from '@/components/sidebars/RightSideBar';
 import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import ArrowBox from '@/components/boxes/ArrowBox';
+import LoadingScreen from '@/components/LoadingScreen';
 
+//utils
+import { fetchMemos } from '@/utils/IndividualMemo/api';
+import { fetchUser } from '@/utils/profile/api';
+import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
 
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
-import { formatDistanceToNow } from 'date-fns';
-import { fetchMemos } from '@/utils/profile/api';
+//types
+import { MemoLogType, AccountType } from '@/types';
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,29 +57,49 @@ function a11yProps(index: number) {
 }
 
 export default function Profile({}: { params: { id: string } }) {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [memos, setMemos] = useState<MemoLogType[]>([]);
+  const [user, setUser] = useState<AccountType | null>(null);
+  const [image, setImage] = useState<string>("/images/profile_icon/panda.png");
   const [countMemos, setCountMemos] = useState(0);
-  const [value, setValue] = React.useState(0);
-  const imageNumber = 'panda'; // パンダの画像を設定
-  const imageUrl = `/images/profile_icon/${imageNumber || 'panda'}.png`; // プレースホルダー画像も設定
-  const user_id = "2f5723eb-4820-d2ed-fbd7-0fe0ae6748d2";
-  
+  const [value, setValue] = useState(0);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const getMemos = async () => {
-      const memosData = await fetchMemos(user_id);
-      setCountMemos(memosData.length);
-      const sortedMemos = memosData.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-      setMemos(sortedMemos);
-    };
-    getMemos();
-  }, []);
+      try {
+        const userData = await fetchUser(id);
 
+        if (!userData) throw new Error("User data not found");
+        setUser(userData);
+        const memosData = await fetchMemos(userData.id);
+        setImage(getImageSrcById(userData.profile_picture));
+        setCountMemos(memosData?.length ?? 0);
+
+        if (memosData) {
+          const sortedMemos = memosData.sort((a, b) =>
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          );
+          setMemos(sortedMemos);
+        }
+      } catch (error) {
+        console.error("Failed to fetch memos or user data:", error);
+      }finally {
+        setLoading(false); // Set loading to false after fetching
+      }
+    };
+
+    getMemos();
+  }, [id]);
+
+  
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
- 
+  if (loading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="flex justify-center min-h-screen bg-contentbg">
@@ -83,17 +112,17 @@ export default function Profile({}: { params: { id: string } }) {
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
               <ReturnButton />
-              <div className="text-xl font-bold">{id}</div>
+              <div className="text-xl font-bold">{user?.display_name ?? "存在するアカウントが見つかりません。"}</div>
             </div>
             <div className='mx-10 my-5'>
               <div className='flex items-center space-x-10'>
-                <Image className='rounded-full' src={imageUrl} alt="profile" height={80} width={80}/>
+                <Image className='rounded-full' src={image} alt="profile" height={80} width={80}/>
                 <div className='flex flex-col items-center '>
                   <Edit color="#5DB53E" height={30} width={30}/>
                   <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
                 </div>
               </div>
-              <ArrowBox>こんにちは！最近Webut始めました！</ArrowBox>
+              <ArrowBox>{user?.bio || "一言メッセージはありません。"}</ArrowBox>
             </div>
             <div className='mx-10'>
               <Box>
@@ -153,10 +182,11 @@ export default function Profile({}: { params: { id: string } }) {
                   <IndividualPostCard
                     key={memo.id}
                     id={memo.id}
-                    title="パンダ"
+                    title={user?.display_name || "No Name"}
                     content={memo.content}
-                    path={imageNumber}
-                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true })}
+                    icon_nuber={user?.profile_picture || 1}
+                    path={user?.user_name || "Nobody"}
+                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
                   />
                 ))}
             </CustomTabPanel>

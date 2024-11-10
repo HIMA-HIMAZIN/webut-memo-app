@@ -36,9 +36,10 @@ export default function Home() {
             {memos.map((memo: MemoLogType) => (
               <PostCard
                 key={memo.id}
-                title={memo.account?.display_name || "No Name"}
+                title={memo.account.display_name || "No Name"}
                 content={memo.content}
                 path={memo.account.user_name}
+                icon_number={memo.account.profile_picture}
                 timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
               />
             ))}
