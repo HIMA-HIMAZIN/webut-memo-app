@@ -38,7 +38,7 @@ export default function Home() {
                 key={memo.id}
                 title={memo.account?.display_name || "No Name"}
                 content={memo.content}
-                path="panda"
+                path={memo.account.user_name}
                 timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
               />
             ))}
