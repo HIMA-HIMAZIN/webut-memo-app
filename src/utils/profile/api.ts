@@ -1,18 +1,20 @@
 import { MemoLogType } from '@/types';
 
 // メモを取得するAPI
-export async function fetchMemos(user_id: string): Promise<MemoLogType[]> {
+export async function fetchMemos(user_id: string): Promise<MemoLogType[] | null> {
   try {
-    const response = await fetch(`http://localhost:3000/api/profile?user_id=${encodeURIComponent(user_id)}`, {
+    const response = await fetch(`http://localhost:3000/api/profile?user_id=${user_id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       cache: 'no-store',
     });
+    
     if (!response.ok) {
       throw new Error("Failed to fetch memos");
     }
+    
     const data = await response.json();
     return data.memos;
   } catch (error) {
@@ -20,7 +22,6 @@ export async function fetchMemos(user_id: string): Promise<MemoLogType[]> {
     return [];
   }
 }
-
 
 //　メモを投稿するAPI
 export async function postMemo(memoContent: string, isPublic : boolean, userId: string): Promise<MemoLogType | null> {
