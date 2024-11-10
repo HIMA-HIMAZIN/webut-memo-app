@@ -13,6 +13,7 @@ import { Tabs, Tab, Box } from '@mui/material';
 //components
 import { LeftSideBar } from '@/components/sidebars/LeftSideBar';
 import { RightSideBar } from '@/components/sidebars/RightSideBar';
+import { PostCard } from '@/components/cards/PostingCard';
 import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import ArrowBox from '@/components/boxes/ArrowBox';
@@ -22,6 +23,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import { fetchMemos } from '@/utils/IndividualMemo/api';
 import { fetchUser } from '@/utils/profile/api';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
+import supabase from "@/utils/supabase/Client";
 
 //types
 import { MemoLogType, AccountType } from '@/types';
@@ -58,6 +60,7 @@ function a11yProps(index: number) {
 
 export default function Profile({}: { params: { id: string } }) {
   const { id } = useParams<{ id: string }>();
+  const [userId, setUserId] = useState<string | null>(null);
   const [memos, setMemos] = useState<MemoLogType[]>([]);
   const [user, setUser] = useState<AccountType | null>(null);
   const [image, setImage] = useState<string>("/images/profile_icon/panda.png");
@@ -66,10 +69,16 @@ export default function Profile({}: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    getUser();
     const getMemos = async () => {
       try {
         const userData = await fetchUser(id);
-
         if (!userData) throw new Error("User data not found");
         setUser(userData);
         const memosData = await fetchMemos(userData.id);
@@ -85,7 +94,7 @@ export default function Profile({}: { params: { id: string } }) {
       } catch (error) {
         console.error("Failed to fetch memos or user data:", error);
       }finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -179,6 +188,7 @@ export default function Profile({}: { params: { id: string } }) {
           <div className="overflow-y-auto max-h-[70vh]">
             <CustomTabPanel value={value} index={0}>
               {memos.map((memo: MemoLogType) => (
+                userId === user?.id ? (
                   <IndividualPostCard
                     key={memo.id}
                     id={memo.id}
@@ -188,6 +198,16 @@ export default function Profile({}: { params: { id: string } }) {
                     path={user?.user_name || "Nobody"}
                     timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
                   />
+                ) : (
+                  <PostCard
+                    key={memo.id}
+                    title={user?.display_name || "No Name"}
+                    content={memo.content}
+                    icon_number={user?.profile_picture || 1}
+                    path={user?.user_name || "Nobody"}
+                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
+                  />
+                )
                 ))}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
