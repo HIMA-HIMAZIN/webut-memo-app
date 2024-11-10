@@ -20,7 +20,7 @@ export async function fetchUserId(): Promise<MemoLogType[]> {
   
 
 // メモを更新するAPI
-export async function updateUserId(id: number, userId:string): Promise<MemoLogType | null> {
+export async function updateUserId(id: string, userId:string): Promise<MemoLogType | null> {
   try {
     const response = await fetch('http://localhost:3000/api/signup/user-name', {
       method: 'PUT',
@@ -62,7 +62,7 @@ export async function updateUserIcon(id: number, iconId:number): Promise<MemoLog
   
 
 // メモを更新するAPI
-export async function updateUserHandle(id: number, handle:string): Promise<MemoLogType | null> {
+export async function updateUserHandle(id: string, handle:string): Promise<MemoLogType | null> {
     try {
       const response = await fetch('http://localhost:3000/api/signup/handle-name', {
         method: 'PUT',
