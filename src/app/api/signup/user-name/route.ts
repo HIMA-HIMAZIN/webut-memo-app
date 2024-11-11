@@ -11,35 +11,19 @@ export async function main(){
     }
 }
 
-
-// 全メモログ取得API
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const GET = async (req: Request, res: NextResponse) => {
-    try {
-         await main();
-         const memos = await prisma.memoLog.findMany();
-         return NextResponse.json({ message: 'success', memos }, { status: 200 });
-    } catch (e) {
-         return NextResponse.json({ message: 'error', e }, { status: 500 });
-    } finally {
-         await prisma.$disconnect();
-    }
- };
- 
- // ユーザーネーム更新API
+// ユーザーネーム更新API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PUT = async (req: Request, res: NextResponse) => {
     try {
-        const { id, content, isPublic } = await req.json();
+        const { id, userId } = await req.json();
         await main();
-        const updatedMemo = await prisma.memoLog.update({
+        const updatedMemo = await prisma.account.update({
             where: {
-                id: Number(id),
+                id: id,
             },
             data: {
-                content: content,
-                isPublic: isPublic,
-                updatedAt: new Date(),
+                user_name : userId,
+                updated_at: new Date(),
             },
         });
         return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });

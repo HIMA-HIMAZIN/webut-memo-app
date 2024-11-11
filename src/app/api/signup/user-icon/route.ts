@@ -15,16 +15,15 @@ export async function main(){
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PUT = async (req: Request, res: NextResponse) => {
     try {
-        const { id, content, isPublic } = await req.json();
+        const { id, iconId } = await req.json();
         await main();
-        const updatedMemo = await prisma.memoLog.update({
+        const updatedMemo = await prisma.account.update({
             where: {
-                id: Number(id),
+                id: id,
             },
             data: {
-                content: content,
-                isPublic: isPublic,
-                updatedAt: new Date(),
+                profile_picture: iconId,
+                updated_at: new Date(),
             },
         });
         return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });

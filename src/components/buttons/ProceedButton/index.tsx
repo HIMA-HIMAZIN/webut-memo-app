@@ -1,33 +1,26 @@
 "use client";
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 
 interface ProceedButtonProps {
   title : string,
-  path : string,
   icon: React.ElementType;
   disabled?: boolean;
   hideTextOnSmallScreen?: boolean;
+  onclick: () => void;
 }
 
 export function ProceedButton({
     title,
-    path , 
     icon: Icon,
     disabled = false,
     hideTextOnSmallScreen = false,
+    onclick = () => {},
 }: ProceedButtonProps) {
-    const router = useRouter();
-    const handleClick = () => {
-        if (!disabled) {
-            router.push(path);
-        }
-    };
 
   return (
     <button
-      onClick={handleClick}
+      onClick={onclick}
       disabled={disabled}
       className={`flex items-center p-4 my-5 font-medium  max-w-fit rounded-full lg:w-9/12 transition-colors ${
         disabled

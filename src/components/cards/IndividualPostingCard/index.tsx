@@ -1,15 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ProfileButton } from "@/components/buttons/ProfileButton";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { TrashSolid } from 'iconoir-react';
+import { TrashSolid, EditPencil} from 'iconoir-react';
 import { deleteMemo } from '@/utils/IndividualMemo/api';
+import WarningModal from '@/components/modals/WarningModal';  // Import the modal
 
 interface IndividualPostCardProps {
-  id : number;
+  id: number;
   title: string;
   content: string;
   path: string;
@@ -33,8 +34,9 @@ const parseContentWithLinks = (text: string) => {
   });
 };
 
-export function IndividualPostCard({ id,title, content, path, timeAgo ,icon_nuber}: IndividualPostCardProps) {
+export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nuber }: IndividualPostCardProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement> | null) => {
@@ -49,13 +51,23 @@ export function IndividualPostCard({ id,title, content, path, timeAgo ,icon_nube
 
   const handleDelete = () => {
     setAnchorEl(null);
-    deleteMemo(id)
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMemo(id);
+    setIsModalOpen(false);
     window.location.reload();
   };
+
+  const cancelDelete = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="w-full bg-white pb-4 border-b border-gray-200">
       <div className="flex justify-between items-center">
-        <ProfileButton title={title} path={path} icon_number = {icon_nuber} />
+        <ProfileButton title={title} path={path} icon_number={icon_nuber} />
         <div className='flex items-center justify-center pr-5'>
             <span className="text-base p-3 pr-5 text-gray-500">{timeAgo}</span>
             <React.Fragment>
@@ -71,12 +83,17 @@ export function IndividualPostCard({ id,title, content, path, timeAgo ,icon_nube
                     aria-labelledby="with-menu-demo-breadcrumbs"
                     sx={{
                       '& .MuiPaper-root': {
-                        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px', // 影を薄く設定
+                        boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
                       },
                     }}
-                >
+                >   
+                    <MenuItem onClick={handleDelete} style={{ color: 'black', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <EditPencil height={18} width={18} strokeWidth={2} />
+                        編集する
+                    </MenuItem>
                     <MenuItem onClick={handleDelete} style={{ color: 'red', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <TrashSolid height={18} width={18} strokeWidth={2} />削除する
+                        <TrashSolid height={18} width={18} strokeWidth={2} />
+                        削除する
                     </MenuItem>
                 </Menu>
             </React.Fragment>
@@ -85,6 +102,11 @@ export function IndividualPostCard({ id,title, content, path, timeAgo ,icon_nube
       <div className="ml-16 mr-5">
         <p className="text-gray-700">{parseContentWithLinks(content)}</p>
       </div>
+      <WarningModal
+        isOpen={isModalOpen}
+        onClose={cancelDelete}
+        onDelete={confirmDelete}
+      />
     </div>
   );
 }
