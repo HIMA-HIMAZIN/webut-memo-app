@@ -105,10 +105,16 @@ export default function Profile({}: { params: { id: string } }) {
   };
 
   const renderTabPanelContent = (daysAgo: number) => {
+    const toJST = (date: Date) => {
+      const utcDate = new Date(date);
+      return new Date(utcDate.getTime()); // JSTに変換
+    };
+  
+    const todayInJST = toJST(new Date());
     const filteredMemos = memos.filter((memo) =>
-      isSameDay(new Date(memo.created_at), subDays(new Date(), daysAgo))
+      isSameDay(toJST(new Date(memo.created_at)), subDays(todayInJST, daysAgo))
     );
-
+  
     return filteredMemos.length > 0 ? (
       filteredMemos.map((memo) =>
         userId === user?.id ? (
@@ -120,7 +126,10 @@ export default function Profile({}: { params: { id: string } }) {
             icon_nuber={user?.profile_picture}
             path={user?.user_name || "Nobody"}
             isPublic={memo.is_public}
-            timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
+            timeAgo={formatDistanceToNow(toJST(new Date(memo.created_at)), {
+              addSuffix: true,
+              locale: ja,
+            })}
           />
         ) : (
           <PostCard
@@ -129,7 +138,10 @@ export default function Profile({}: { params: { id: string } }) {
             content={memo.content}
             icon_number={user?.profile_picture || 1}
             path={user?.user_name || "Nobody"}
-            timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
+            timeAgo={formatDistanceToNow(toJST(new Date(memo.created_at)), {
+              addSuffix: true,
+              locale: ja,
+            })}
           />
         )
       )
@@ -137,6 +149,7 @@ export default function Profile({}: { params: { id: string } }) {
       <div>{daysAgo === 0 ? "今日のメモはありません" : `${daysAgo}日前にメモはされてません`}</div>
     );
   };
+  
 
   if (loading) {
     return <LoadingScreen />;
