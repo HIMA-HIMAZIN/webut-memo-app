@@ -16,7 +16,7 @@ import SettingsModal from "@/components/modals/SettingsModal";
 
 // utils
 import supabase from "@/utils/supabase/Client";
-import {fetchUserName} from "@/utils/useName/api";
+import { fetchUserName } from "@/utils/useName/api";
 
 // types
 import { AccountType } from "@/types";
@@ -26,11 +26,12 @@ export function LeftSideBar() {
   const [isMemoModalOpen, setIsMemoModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null); // userId を追加
-  const [userData, setUserData]= useState<AccountType | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userData, setUserData] = useState<AccountType | null>(null);
+  const [displayName, setDisplayName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // セッションをチェックしてログイン状態を設定
     const checkSession = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
@@ -38,68 +39,74 @@ export function LeftSideBar() {
       } else if (session) {
         setIsLogin(true);
       }
-    };
-    checkSession();
 
-    // 認証状態の変化を監視
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event) => {
-        if (event === 'SIGNED_IN') {
-          setIsLogin(true);
-        } else if (event === 'SIGNED_OUT') {
-          setIsLogin(false);
-          setUserId(null); // ログアウト時に userId をリセット
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event) => {
+          if (event === 'SIGNED_IN') {
+            setIsLogin(true);
+          } else if (event === 'SIGNED_OUT') {
+            setIsLogin(false);
+            setUserId(null);
+          }
         }
-      }
-    );
+      );
 
-    // クリーンアップ関数
-    return () => {
-      authListener.subscription.unsubscribe();
+      return () => authListener.subscription.unsubscribe();
     };
-  }, []);
 
-  useEffect(() => {
-    // ログイン時にユーザーIDを取得
     const getUser = async () => {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (error) {
         console.error('Failed to get user:', error.message);
       } else if (user) {
-        setUserId(user.id); // userId を設定
-        const fetchedUserName = await fetchUserName(user.id); // UserName 関数を呼び出し
-        setUserData(fetchedUserName); // user_name を設定
+        setUserId(user.id);
+        const fetchedUserName = await fetchUserName(user.id);
+        setUserData(fetchedUserName);
+        setDisplayName(fetchedUserName?.display_name ?? "不明さん");
       }
     };
 
-    if (isLogin) {
-      getUser();
-    }
-  }, [isLogin]); // isLogin が true の時のみ実行
+    const initialize = async () => {
+      await checkSession();
+      if (isLogin) {
+        await getUser();
+      }
+      setIsLoading(false);
+    };
+
+    initialize();
+  }, [isLogin]);
 
   const buttonTitle = isLogin ? "メモする" : "ログイン";
   const buttonIcon = isLogin ? Edit : LogIn;
   const buttonAction = isLogin ? () => setIsMemoModalOpen(true) : () => setIsAccountModalOpen(true);
 
   const openSettingsModal = () => setIsSettingsModalOpen(true);
-  
   const closeSettingsModal = () => setIsSettingsModalOpen(false);
   const closeMemoModal = () => setIsMemoModalOpen(false);
   const closeAccountModal = () => setIsAccountModalOpen(false);
+
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-8">
       <div>
         <div className="mb-5 ml-4">
           <Image
-              src="/icons/club-icon.svg"
-              alt="Example Image"
-              width={30}
-              height={30}
+            src="/icons/club-icon.svg"
+            alt="Example Image"
+            width={30}
+            height={30}
           />
         </div>
         {isLogin && userId && (
-          <ProfileButton title={userData?.display_name ?? "不明さん"}  path={userData?.user_name ?? "nobody"} hideTextOnSmallScreen={true} icon_number={userData?.profile_picture ?? 1} />
+          <ProfileButton title={displayName} path={userData?.user_name ?? "nobody"} hideTextOnSmallScreen={true} icon_number={userData?.profile_picture ?? 1} />
         )}
         <ActionButton title="みんな" path="/" icon={Planet} />
         <PrimaryButton title={buttonTitle} icon={buttonIcon} onClick={buttonAction} hideTextOnSmallScreen={true} />

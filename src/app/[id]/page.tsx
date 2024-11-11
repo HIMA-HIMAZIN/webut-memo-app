@@ -194,6 +194,7 @@ export default function Profile({}: { params: { id: string } }) {
                     id={memo.id}
                     title={user?.display_name || "No Name"}
                     content={memo.content}
+                    isPublic = {memo.is_public}
                     icon_nuber={user?.profile_picture || 1}
                     path={user?.user_name || "Nobody"}
                     timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
