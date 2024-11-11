@@ -63,27 +63,32 @@ export const POST= async (req: Request, res: NextResponse) => {
 
 // メモ更新API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const PUT = async (req: Request, res: NextResponse) => {
-    try {
-      const { id, content, is_public } = await req.json();
-      if (!id || content === undefined || is_public === undefined) {
-        return NextResponse.json({ message: 'ID, content, and is_public are required' }, { status: 400 });
-      }
-  
-      await main();
-      const updatedMemo = await prisma.memolog.update({
-        where: { id: id },
-        data: { content: content, is_public: is_public },
-      });
-  
-      return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });
-    } catch (e) {
-      console.error(e);
-      return NextResponse.json({ message: 'error', e }, { status: 500 });
-    } finally {
-      await prisma.$disconnect();
+export const PUT = async (req: Request) => {
+  try {
+    const { id, content, isPublic } = await req.json();
+    if (!id || content === undefined || isPublic === undefined) {
+      return NextResponse.json({ message: 'ID, content, and isPublic are required' }, { status: 400 });
     }
-  };
+
+    await prisma.$connect();
+    const updatedMemo = await prisma.memolog.update({
+      where: { id: id },
+      data: {
+        content: content,
+        is_public: isPublic,
+        updated_at: new Date(),
+      },
+    });
+
+    return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ message: 'error', error: (e as Error).message }, { status: 500 });
+  } finally {
+    await prisma.$disconnect();
+  }
+};
+
 
 // メモ更新API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

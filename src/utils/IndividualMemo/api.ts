@@ -71,7 +71,7 @@ export async function updateMemo(id: number, memoContent: string, isPublic: bool
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id, content: memoContent, isPublic }),
+      body: JSON.stringify({ id:id, content: memoContent, isPublic:isPublic }),
     });
     if (!response.ok) {
       throw new Error("Failed to update memo");
