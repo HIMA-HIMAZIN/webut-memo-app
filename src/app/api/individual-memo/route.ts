@@ -85,7 +85,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     }
   };
 
-// メモ更新API
+// メモ削除API
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const DELETE = async (req: Request, res: NextResponse) => {
     try {

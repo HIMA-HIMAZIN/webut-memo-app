@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useState ,useRef, useEffect, useCallback } from "react";
+import { useRouter } from 'next/navigation';
 import { Xmark } from 'iconoir-react';
-import { createClient } from '@supabase/supabase-js';
 import Script from 'next/script';
+import supabase from "@/utils/supabase/Client";
+
+const clientId = process.env.NEXT_PUBLIC_Google_Client_ID!;
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -24,12 +27,6 @@ interface Google {
   };
 }
 
-const clientId = process.env.NEXT_PUBLIC_Google_Client_ID!;
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 declare global {
   interface Window {
     google?: Google;
@@ -37,9 +34,14 @@ declare global {
   }
 }
 
-// ログイン処理
-export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
+export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const [isClient, setIsClient] = useState(false); // クライアントサイド確認用
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true); // クライアントサイドにセット
+  }, []);
 
   const handleSignInWithGoogle = useCallback(
     async (response: GoogleSignInResponse) => {
@@ -50,17 +52,34 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
 
       if (error) {
         console.error('Google Sign-In error:', error.message);
-      } else {
-        console.log('User signed in:', data);
-        onLogin();
-        onClose(); // サインイン後にモーダルを閉じる
+        return;
+      }
+
+      if (data && data.user) {
+        const user = data.user;
+
+        // 現在の時刻を取得して、新規ユーザーかを判定
+        const userCreatedTime = new Date(user.created_at).getTime();
+        const now = Date.now();
+        const timeDifference = now - userCreatedTime;
+        
+        // もしユーザーが1分以内に作成された場合、新規ユーザーとみなす
+        const isNewUser = timeDifference < 60000;
+
+        if (isNewUser) {
+          router.push('/signup/user-name'); // ユーザー名作成ページにリダイレクト
+        } else {
+          // 既存ユーザーの場合、通常のログイン処理
+          onLogin();
+          onClose(); 
+        }
       }
     },
-    [ onLogin, onClose]
+    [onLogin, onClose, router]
   );
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && isClient) { // クライアントサイドでのみスクリプトをロード
       window.handleSignInWithGoogle = handleSignInWithGoogle;
 
       const script = document.createElement('script');
@@ -81,7 +100,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
       };
       document.head.appendChild(script);
 
-      // モーダル外クリックで閉じる処理
       const handleClickOutside = (event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
           onClose();
@@ -89,7 +107,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
       };
       document.addEventListener("mousedown", handleClickOutside);
 
-      // クリーンアップ関数
       return () => {
         const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
         if (script) {
@@ -99,10 +116,10 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [isOpen, handleSignInWithGoogle, onClose]);
+  }, [isOpen, handleSignInWithGoogle, onClose, isClient]);
 
   if (!isOpen) return null;
-
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <Script src="https://accounts.google.com/gsi/client" async defer></Script>

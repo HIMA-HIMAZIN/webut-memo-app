@@ -42,7 +42,7 @@ const CreateUserName = () => {
         <ProgressionCircle activeStep={activeStep} />
 
         {/* GuideTitleの表示 */}
-        <GuideTitle text="世界に一つだけの名前をつけて！！" />
+        <GuideTitle text="世界に一つだけの名前をつけよう" />
 
         {/* テキストボックスの表示 */}
         <Box sx={{ width: '40%', mt: 20 }}>
