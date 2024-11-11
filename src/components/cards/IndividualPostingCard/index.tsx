@@ -7,7 +7,8 @@ import IconButton from '@mui/material/IconButton';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { TrashSolid, EditPencil} from 'iconoir-react';
 import { deleteMemo } from '@/utils/IndividualMemo/api';
-import WarningModal from '@/components/modals/WarningModal';  // Import the modal
+import WarningModal from '@/components/modals/WarningModal';
+import {EditModal} from "@/components/modals/EditModal"
 
 interface IndividualPostCardProps {
   id: number;
@@ -16,6 +17,7 @@ interface IndividualPostCardProps {
   path: string;
   timeAgo: string;
   icon_nuber: number;
+  isPublic: boolean;
 }
 
 const parseContentWithLinks = (text: string) => {
@@ -34,9 +36,10 @@ const parseContentWithLinks = (text: string) => {
   });
 };
 
-export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nuber }: IndividualPostCardProps) {
+export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nuber,isPublic}: IndividualPostCardProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement> | null) => {
@@ -64,6 +67,11 @@ export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nub
     setIsModalOpen(false);
   };
 
+  const handleEdit = () => {
+    setAnchorEl(null);
+    setIsEditModalOpen(true);
+  };
+
   return (
     <div className="w-full bg-white pb-4 border-b border-gray-200">
       <div className="flex justify-between items-center">
@@ -87,7 +95,7 @@ export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nub
                       },
                     }}
                 >   
-                    <MenuItem onClick={handleDelete} style={{ color: 'black', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <MenuItem onClick={handleEdit} style={{ color: 'black', display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <EditPencil height={18} width={18} strokeWidth={2} />
                         編集する
                     </MenuItem>
@@ -106,6 +114,13 @@ export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nub
         isOpen={isModalOpen}
         onClose={cancelDelete}
         onDelete={confirmDelete}
+      />
+      <EditModal
+        id = {id}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        initialMemo={content}
+        initialIsPublic={isPublic}
       />
     </div>
   );
