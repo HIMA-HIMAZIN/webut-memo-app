@@ -90,10 +90,10 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   };
 
   const handleSubmit = async () => {
-    if (filterProfanity(memo)) {
-      setError("禁止ワードが含まれています。");
-      return;
-    }
+    // if (filterProfanity(memo)) {
+    //   setError("禁止ワードが含まれています。");
+    //   return;
+    // }
 
     try {
       const result = await postMemo(memo, isPublic, userId!);

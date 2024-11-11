@@ -36,11 +36,11 @@ declare global {
 
 export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false); // クライアントサイド確認用
+  const [isClient, setIsClient] = useState(false); 
   const router = useRouter();
 
   useEffect(() => {
-    setIsClient(true); // クライアントサイドにセット
+    setIsClient(true); 
   }, []);
 
   const handleSignInWithGoogle = useCallback(
@@ -48,6 +48,7 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
+         nonce: '<NONCE>',
       });
 
       if (error) {
