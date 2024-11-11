@@ -52,12 +52,12 @@ jobs:
         with:
           node-version: "18"
 
-      # Initialize & Run Tests
-      - name: Initialize & Run Tests
+      # Initialize & Run ESLint and Tests
+      - name: Initialize & Run ESLint and Tests
         run: |
           npm install
-          npx jest --passWithNoTests
-          # 依存関係をインストールしてテストを実行。テストがない場合でもコード0で終了。
+          npm run lint  # ESLintのチェックを実行
+          npx jest --passWithNoTests  # 依存関係をインストールしてテストを実行。テストがない場合でもコード0で終了。
 
   # Notify Success
   notify_test_success:
