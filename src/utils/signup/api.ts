@@ -41,7 +41,7 @@ export async function updateUserId(id: string, userId:string): Promise<MemoLogTy
 
 
 // メモを更新するAPI
-export async function updateUserIcon(id: number, iconId:number): Promise<MemoLogType | null> {
+export async function updateUserIcon(id: string, iconId:number): Promise<MemoLogType | null> {
     try {
       const response = await fetch('http://localhost:3000/api/signup/user-icon', {
         method: 'PUT',
