@@ -1,0 +1,111 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Notify Test Start
+  notify_test_start:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: ./node_modules
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}-modules
+
+      - name: Notify Test Start in GitHub
+        run: echo "GitHub Actions Test started for ${GITHUB_REPOSITORY}" > github-message.txt
+      - name: Upload Test Start Message
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-start-message
+          path: github-message.txt
+
+  # Test Job
+  test:
+    runs-on: ubuntu-latest
+    needs: notify_test_start
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      # Initialize & Run Tests
+      - name: Initialize & Run Tests
+        run: |
+          npm install
+          npx jest --passWithNoTests
+          # 依存関係をインストールしてテストを実行。テストがない場合でもコード0で終了。
+
+  # Notify Success
+  notify_test_success:
+    runs-on: ubuntu-latest
+    needs: [test, notify_test_start]
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Notify Test Success in GitHub
+        run: echo "Tests succeeded in GitHub Actions for ${GITHUB_REPOSITORY}" > github-success.txt
+      - name: Upload Test Success Message
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-success-message
+          path: github-success.txt
+
+  # Notify Failure
+  notify_test_failure:
+    runs-on: ubuntu-latest
+    needs: [test, notify_test_start]
+    if: failure()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Notify Test Failure in GitHub
+        run: echo "Tests failed in GitHub Actions for ${GITHUB_REPOSITORY}" > github-failure.txt
+      - name: Upload Test Failure Message
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-failure-message
+          path: github-failure.txt
+
+  # Notify Cancelled
+  notify_test_cancelled:
+    runs-on: ubuntu-latest
+    needs: [test, notify_test_start]
+    if: cancelled()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Notify Test Cancelled in GitHub
+        run: echo "Tests cancelled in GitHub Actions for ${GITHUB_REPOSITORY}" > github-cancelled.txt
+      - name: Upload Test Cancelled Message
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-cancelled-message
+          path: github-cancelled.txt
