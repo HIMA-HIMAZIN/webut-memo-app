@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 // コンポーネント
@@ -12,6 +12,7 @@ import { ArrowRightCircle } from 'iconoir-react';
 
 // API
 import { updateUserId } from '@/utils/signup/api';
+import supabase from '@/utils/supabase/client';
 
 // MUI
 import { Box, TextField } from '@mui/material';
@@ -20,7 +21,21 @@ const CreateUserName = () => {
   const [activeStep] = useState(1);
   const [user_name, setUserName] = useState("");
   const [error, setError] = useState("");
+  const [userId, setUserId] = useState<string | null>(null);
   const isButtonDisabled = error !== "" || user_name === "";
+
+  // ログインしているユーザーIDを取得
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("ユーザーの取得に失敗しました:", error);
+      } else if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUser();
+  }, []);
 
   // ユーザーネームのバリデーション
   const validateUserName = (value: string) => {
@@ -37,11 +52,13 @@ const CreateUserName = () => {
   };
 
   const handleProceedClick = async () => {
-    const userId = "YOUR_USER_ID"; // ここに実際のユーザーIDを設定
+    if (!userId) {
+      console.error("ユーザーIDが存在しません");
+      return;
+    }
     const result = await updateUserId(userId, user_name);
     if (result) {
       console.log("ユーザー名が更新されました");
-      // ここでページ遷移または次の処理を実行
     } else {
       console.error("ユーザー名の更新に失敗しました");
     }
@@ -71,7 +88,7 @@ const CreateUserName = () => {
             error={!!error}
             helperText={error || "20文字以下のローマ字と数字のみで入力してください。"}
             slotProps={
-              {formHelperText(ownerState) {
+              {formHelperText() {
                 return {style: {color: error ? 'red' : 'black'
               },}
             }}}
@@ -83,6 +100,7 @@ const CreateUserName = () => {
           icon={ArrowRightCircle}
           navigateTo="/signup/select-icon"
           disabled={isButtonDisabled}
+          onClick={handleProceedClick}
         />
       </div>
     </div>
