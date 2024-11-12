@@ -7,12 +7,10 @@ export async function fetchMemos(): Promise<MemoLogType[]> {
       cache: 'no-store',
     });
     if (!response.ok) {
-      throw new Error("Failed to fetch memos");
     }
     const data = await response.json();
     return data.memos;
   } catch (error) {
-    console.error(error);
     return [];
   }
 }

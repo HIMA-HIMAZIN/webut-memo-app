@@ -81,7 +81,9 @@ export default function Profile({}: { params: { id: string } }) {
     const getMemos = async () => {
       try {
         const userData = await fetchUser(id);
-        if (!userData) throw new Error("User data not found");
+        if (!userData) {
+          return;
+        }
         setUser(userData);
         if (userId === user?.id){
           const memosData = await fetchMemos(userData.id);

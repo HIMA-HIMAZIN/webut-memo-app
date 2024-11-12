@@ -11,13 +11,11 @@ export async function fetchPrivateMemos(user_id: string): Promise<MemoLogType[] 
       });
       
       if (!response.ok) {
-        throw new Error("Failed to fetch memos");
       }
       
       const data = await response.json();
       return data.memos;
     } catch (error) {
-      console.error(error);
       return [];
     }
   }
