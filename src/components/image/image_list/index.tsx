@@ -3,7 +3,7 @@
 import Image from 'next/image';
 
 type ImageListProps = {
-    onSelect: (src: string) => void;
+    onSelect: (id: number,src: string) => void;
 };
 
 export function ImageList({ onSelect }: ImageListProps) {
@@ -26,7 +26,7 @@ export function ImageList({ onSelect }: ImageListProps) {
                     width={100}   // サムネイルサイズを指定
                     height={100}
                     className="rounded-full cursor-pointer border-2 border-transparent hover:border-blue-500"
-                    onClick={() => onSelect(image.src)}
+                    onClick={() => onSelect(image.id, image.src)}
                 />
             ))}
         </div>

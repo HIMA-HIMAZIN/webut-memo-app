@@ -2,25 +2,62 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+
+// ライブラリ
 import { ArrowRightCircle } from 'iconoir-react';
+
+// コンポーネント
 import { GuideTitle } from '@/components/headers/GuideTitle';
 import { ImageList } from '@/components/image/image_list';
 import { ProgressionCircle } from '@/components/bar/ProgressionBar';
 import { ProceedButton } from '@/components/buttons/ProceedButton';
 
+// API
+import supabase from '@/utils/supabase/client';
+import { updateUserIcon } from '@/utils/signup/api';
+
 const CreateIcon = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null); 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const activeStep = 2;
 
-  const handleImageSelect = (imageSrc: string) => {
+  const handleImageSelect = (id: number, imageSrc: string) => {
     setSelectedImage(imageSrc);
+    setSelectedImageId(id);
   };
 
   useEffect(() => {
     // 画像が選択されているかどうかでボタンの無効状態を更新
     setIsButtonDisabled(selectedImage === null);
   }, [selectedImage]);
+
+   // ログインしているユーザーIDを取得
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("ユーザーの取得に失敗しました:", error);
+      } else if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const handleProceedClick = async () => {
+    if (!userId || selectedImageId === null) {  
+      console.error("ユーザーIDまたは選択された画像IDが存在しません");
+      return;
+    }
+    const result = await updateUserIcon(userId, selectedImageId);
+    if (result) {
+      console.log("アイコンが更新されました");
+    } else {
+      console.error("アイコン更新に失敗しました");
+    }
+  };
 
   return (
     <div className="pl-8 pt-8 mb-5">
@@ -41,7 +78,7 @@ const CreateIcon = () => {
             <Image
               src={selectedImage}
               alt="選択された画像"
-              width={200}    // 幅と高さを指定します
+              width={200}    
               height={200}
               className="rounded-full"
             />
@@ -55,7 +92,13 @@ const CreateIcon = () => {
           <ImageList onSelect={handleImageSelect} />
         </div>
         <div className="flex justify-center mt-8">
-          <ProceedButton title="登録する" icon={ArrowRightCircle} path="/signup/handle" disabled={isButtonDisabled} />
+          <ProceedButton
+            title="登録する"
+            icon={ArrowRightCircle}
+            navigateTo="/signup/display-name"
+            disabled={isButtonDisabled}
+            onClick={handleProceedClick}
+          />
         </div>
       </div>
     </div>

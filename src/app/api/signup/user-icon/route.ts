@@ -15,14 +15,14 @@ export async function main(){
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PUT = async (req: Request, res: NextResponse) => {
     try {
-        const { id, iconId } = await req.json();
+        const { id, profile_picture } = await req.json();
         await main();
         const updatedMemo = await prisma.account.update({
             where: {
                 id: id,
             },
             data: {
-                profile_picture: iconId,
+                profile_picture: profile_picture,
                 updated_at: new Date(),
             },
         });
