@@ -12,10 +12,8 @@ interface PostCardProps {
 const parseContentWithLinks = (text: string) => {
   const urlPattern = /(https?:\/\/[^\s]+)/g;
   
-  // Split the text by newlines first to handle line breaks.
   return text.split('\n').map((line, lineIndex) => (
     <span key={lineIndex} style={{ display: 'block', whiteSpace: 'pre-wrap' }}>
-      {/* Split each line by URLs and map over them to handle both URLs and plain text */}
       {line.split(urlPattern).map((part, index) => {
         if (urlPattern.test(part)) {
           return (
