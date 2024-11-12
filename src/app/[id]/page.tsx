@@ -21,6 +21,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 
 //utils
 import { fetchMemos } from '@/utils/IndividualMemo/api';
+import { fetchPrivateMemos } from "@/utils/privateMemo/api"
 import { fetchUser } from '@/utils/profile/api';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
 import supabase from "@/utils/supabase/Client";
@@ -80,25 +81,36 @@ export default function Profile({}: { params: { id: string } }) {
         const userData = await fetchUser(id);
         if (!userData) throw new Error("User data not found");
         setUser(userData);
-        const memosData = await fetchMemos(userData.id);
-        setImage(getImageSrcById(userData.profile_picture));
-        setCountMemos(memosData?.length ?? 0);
-
-        if (memosData) {
-          const sortedMemos = memosData.sort((a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-          setMemos(sortedMemos);
+        if (userId === user?.id){
+          const memosData = await fetchMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
+        }else{
+          const memosData = await fetchPrivateMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
         }
+
       } catch (error) {
         console.error("Failed to fetch memos or user data:", error);
       } finally {
         setLoading(false);
       }
     };
-
     getMemos();
-  }, [id]);
+  }, [id, user?.id, userId]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
