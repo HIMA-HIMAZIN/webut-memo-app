@@ -7,8 +7,7 @@ import { Planet, Edit } from "iconoir-react";
 import { postMemo } from "@/utils/IndividualMemo/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
-
-import { filterProfanity } from "@/filters/profanityFilter";
+//import { filterProfanity } from "@/filters/profanityFilter";
 import supabase from "@/utils/supabase/client";
 
 const MAX_CHAR_LIMIT = 150;

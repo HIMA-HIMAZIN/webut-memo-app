@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
 import { WarningTriangleSolid } from 'iconoir-react';
 import supabase from '@/utils/supabase/client';
@@ -106,9 +107,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
         <p className="py-2 text-2xl font-semibold mt-4 mb-4">アカウント</p>
         <div className="flex items-center space-x-4">
           {userAvatar && (
-            <img
+            <Image
               src={userAvatar}
-              alt={`${userName}のプロフィール画像`}
+              alt="User Avatar"
               className="w-12 h-12 rounded-full"
             />
           )}
