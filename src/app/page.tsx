@@ -7,7 +7,7 @@ import { RightSideBar } from '../components/sidebars/RightSideBar';
 import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { formatDistanceToNow } from 'date-fns';
-import { fetchMemos } from '@/utils/whole/api';
+import { fetchMemos } from '@/utils/publicMemo/api';
 import { ja } from 'date-fns/locale';
 
 export default function Home() {

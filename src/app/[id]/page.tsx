@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, isSameDay, subDays } from 'date-fns';
 import { ja } from 'date-fns/locale';
 
 //packages
@@ -21,13 +21,13 @@ import LoadingScreen from '@/components/LoadingScreen';
 
 //utils
 import { fetchMemos } from '@/utils/IndividualMemo/api';
+import { fetchPrivateMemos } from "@/utils/privateMemo/api"
 import { fetchUser } from '@/utils/profile/api';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
 import supabase from "@/utils/supabase/client";
 
 //types
 import { MemoLogType, AccountType } from '@/types';
-
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -81,40 +81,96 @@ export default function Profile({}: { params: { id: string } }) {
         const userData = await fetchUser(id);
         if (!userData) throw new Error("User data not found");
         setUser(userData);
-        const memosData = await fetchMemos(userData.id);
-        setImage(getImageSrcById(userData.profile_picture));
-        setCountMemos(memosData?.length ?? 0);
-
-        if (memosData) {
-          const sortedMemos = memosData.sort((a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-          setMemos(sortedMemos);
+        if (userId === user?.id){
+          const memosData = await fetchMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
+        }else{
+          const memosData = await fetchPrivateMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
         }
+
       } catch (error) {
         console.error("Failed to fetch memos or user data:", error);
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
-
     getMemos();
-  }, [id]);
+  }, [id, user?.id, userId]);
 
-  
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const renderTabPanelContent = (daysAgo: number) => {
+    const toJST = (date: Date) => {
+      const utcDate = new Date(date);
+      return new Date(utcDate.getTime()); // JSTに変換
+    };
+  
+    const todayInJST = toJST(new Date());
+    const filteredMemos = memos.filter((memo) =>
+      isSameDay(toJST(new Date(memo.created_at)), subDays(todayInJST, daysAgo))
+    );
+  
+    return filteredMemos.length > 0 ? (
+      filteredMemos.map((memo) =>
+        userId === user?.id ? (
+          <IndividualPostCard
+            key={memo.id}
+            id={memo.id}
+            title={user?.display_name || "No Name"}
+            content={memo.content}
+            icon_nuber={user?.profile_picture}
+            path={user?.user_name || "Nobody"}
+            isPublic={memo.is_public}
+            timeAgo={formatDistanceToNow(toJST(new Date(memo.created_at)), {
+              addSuffix: true,
+              locale: ja,
+            })}
+          />
+        ) : (
+          <PostCard
+            key={memo.id}
+            title={user?.display_name || "No Name"}
+            content={memo.content}
+            icon_number={user?.profile_picture || 1}
+            path={user?.user_name || "Nobody"}
+            timeAgo={formatDistanceToNow(toJST(new Date(memo.created_at)), {
+              addSuffix: true,
+              locale: ja,
+            })}
+          />
+        )
+      )
+    ) : (
+      <div>{daysAgo === 0 ? "今日のメモはありません" : `${daysAgo}日前にメモはされてません`}</div>
+    );
+  };
+  
 
   if (loading) {
     return <LoadingScreen />;
   }
 
   return (
-    <div className="flex justify-center min-h-screen bg-contentbg">
+    <div className="flex justify-center h-full bg-contentbg">
       <div className="flex w-full max-w-7xl">
-        
-        <div className="hidden md:block w-1/4 bg-contentbg p-4">
+        <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar/>
         </div>
         <div className="md:w-1/2 bg-white md:min-w-[640px]">
@@ -138,87 +194,51 @@ export default function Profile({}: { params: { id: string } }) {
                 <Tabs
                   value={value}
                   onChange={handleChange}
+                  variant="scrollable"
+                  scrollButtons
+                  allowScrollButtonsMobile
                   aria-label="メニュー"
                   sx={{
                     '& .MuiTabs-indicator': {
                       backgroundColor: '#5DB53E',
                       height: '4px',
                       borderRadius: '2px',
-                      width: '60%', // 線の長さを短く
-                      margin: '0 auto', // 線を中央に配置
+                      width: '60%',
+                      margin: '0 auto',
                     },
-                    justifyContent: 'flex-start', // タブを左寄せ
+                    justifyContent: 'flex-start',
                   }}
-                  centered={false} // 左寄せを有効にするため
+                  centered={false}
                 >
-                  <Tab
-                    label="メモ"
-                    {...a11yProps(0)}
-                    disableRipple // リップル効果を無効化
-                    sx={{
-                      fontWeight: 'bold',
-                      color: value === 0 ? '#404040' : '#8C8C8C',
-                      '&.Mui-selected': { color: '#404040' },
-                    }}
-                  />
-                  <Tab
-                    label="ブック"
-                    {...a11yProps(1)}
-                    disableRipple // リップル効果を無効化
-                    sx={{
-                      fontWeight: 'bold',
-                      color: value === 1 ? '#404040' : '#8C8C8C',
-                      '&.Mui-selected': { color: '#404040' },
-                    }}
-                  />
-                  <Tab
-                    label="いいね"
-                    {...a11yProps(2)}
-                    disableRipple // リップル効果を無効化
-                    sx={{
-                      fontWeight: 'bold',
-                      color: value === 2 ? '#404040' : '#8C8C8C',
-                      '&.Mui-selected': { color: '#404040' },
-                    }}
-                  />
+                  {[...Array(8).keys()].map((i) => (
+                    <Tab
+                      key={i}
+                      label={`${i === 0 ? "今日" : i + "日前"}`}
+                      {...a11yProps(i)}
+                      disableRipple
+                      sx={{
+                        fontWeight: 'bold',
+                        color: value === i ? '#404040' : '#8C8C8C',
+                        '&.Mui-selected': { color: '#404040' },
+                      }}
+                    />
+                  ))}
                 </Tabs>
               </Box>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-[70vh]">
-            <CustomTabPanel value={value} index={0}>
-              {memos.map((memo: MemoLogType) => (
-                userId === user?.id ? (
-                  <IndividualPostCard
-                    key={memo.id}
-                    id={memo.id}
-                    title={user?.display_name || "No Name"}
-                    content={memo.content}
-                    icon_nuber={user?.profile_picture || 1}
-                    path={user?.user_name || "Nobody"}
-                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
-                  />
-                ) : (
-                  <PostCard
-                    key={memo.id}
-                    title={user?.display_name || "No Name"}
-                    content={memo.content}
-                    icon_number={user?.profile_picture || 1}
-                    path={user?.user_name || "Nobody"}
-                    timeAgo={formatDistanceToNow(new Date(memo.created_at), { addSuffix: true, locale: ja })}
-                  />
-                )
-                ))}
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-              ブックをした投稿はありません。
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-              いいねをした投稿はありません。
-            </CustomTabPanel>
+          <div className="overflow-y-auto max-h-[60vh]">
+            {[...Array(8).keys()].map((i) => (
+              <CustomTabPanel key={i} value={value} index={i}>
+                {renderTabPanelContent(i)}
+              </CustomTabPanel>
+            ))}
           </div>
         </div>
-        <RightSideBar/>
+        <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
+          <RightSideBar/>
+        </div>
+
       </div>
     </div>
   );
