@@ -182,6 +182,8 @@ export default function Profile({}: { params: { id: string } }) {
             <div className='mx-10 my-5'>
               <div className='flex items-center space-x-10'>
                 <Image className='rounded-full' src={image} alt="profile" height={80} width={80}/>
+                <div>
+                </div>
                 <div className='flex flex-col items-center '>
                   <Edit color="#5DB53E" height={30} width={30}/>
                   <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
@@ -238,7 +240,6 @@ export default function Profile({}: { params: { id: string } }) {
         <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <RightSideBar/>
         </div>
-
       </div>
     </div>
   );
