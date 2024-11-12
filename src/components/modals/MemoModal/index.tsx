@@ -7,10 +7,10 @@ import { Planet, Edit } from "iconoir-react";
 import { postMemo } from "@/utils/IndividualMemo/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
-import { filterProfanity } from "@/filters/profanityFilter";
 import supabase from "@/utils/supabase/Client";
 
 const MAX_CHAR_LIMIT = 150;
+const URL_REGEX = /https?:\/\/[^\s]+/g;
 
 interface MemoModalProps {
   isOpen: boolean;
@@ -24,7 +24,6 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const [memo, setMemo] = useState("");
   const [isPublic, setIsPublic] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
-
   const [error, setError] = useState<string | null>(null);
   const [displayLength, setDisplayLength] = useState(0);
 
@@ -32,7 +31,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        setUserId(user.id); // userId を設定
+        setUserId(user.id);
       }
     };
     getUser();
@@ -76,6 +75,10 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
     return totalLength;
   };
 
+  const highlightUrls = (text: string) => {
+    return text.replace(URL_REGEX, (url) => `<span style="color: blue;">${url}</span>`);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
     setMemo(input);
@@ -86,15 +89,10 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   };
 
   const handleSwitchChange = () => {
-    setIsPublic((prev) => !prev); // スイッチの切り替えでisPublicを反転
+    setIsPublic((prev) => !prev);
   };
 
   const handleSubmit = async () => {
-    if (filterProfanity(memo)) {
-      setError("禁止ワードが含まれています。");
-      return;
-    }
-
     try {
       const result = await postMemo(memo, isPublic, userId!);
       if (result) {
@@ -132,13 +130,28 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
             <IosSwitcheButton checked={isPublic} onChange={handleSwitchChange} />
           </div>
         </div>
-        <textarea
-          className="w-full h-full p-2 resize-none overflow-y-auto text-2xl border-none outline-none"
-          placeholder="メモを入力..."
-          value={memo}
-          onChange={handleChange}
-          style={{ fontSize: "24px" }}
-        ></textarea>
+        
+        <div className="relative w-full h-full">
+          <div
+            className="absolute inset-0 p-2 text-2xl whitespace-pre-wrap"
+            style={{
+              color: "black",
+              zIndex: 1,
+              fontSize: "24px",
+              overflowY: "auto",
+              pointerEvents: "none",
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightUrls(memo) }}
+          />
+          <textarea
+            className="absolute inset-0 w-full h-full p-2 text-2xl resize-none border-none outline-none"
+            placeholder="メモを入力..."
+            value={memo}
+            onChange={handleChange}
+            style={{ color: "black", background: "transparent", fontSize: "24px" }}
+          ></textarea>
+        </div>
+        
         <div className="flex justify-end items-center mt-2">
           {error && <p className="text-red-500">{error}</p>}
           <span className={`text-sm pl-5 ${displayLength > MAX_CHAR_LIMIT ? "text-red-500" : "text-gray-600"}`}>

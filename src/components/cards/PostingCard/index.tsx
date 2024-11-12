@@ -11,18 +11,23 @@ interface PostCardProps {
 
 const parseContentWithLinks = (text: string) => {
   const urlPattern = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlPattern);
   
-  return parts.map((part, index) => {
-    if (urlPattern.test(part)) {
-      return (
-        <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-          {part.length > 20 ? `${part.slice(0, 17)}...` : part}
-        </a>
-      );
-    }
-    return <span key={index}>{part}</span>;
-  });
+  // Split the text by newlines first to handle line breaks.
+  return text.split('\n').map((line, lineIndex) => (
+    <span key={lineIndex} style={{ display: 'block', whiteSpace: 'pre-wrap' }}>
+      {/* Split each line by URLs and map over them to handle both URLs and plain text */}
+      {line.split(urlPattern).map((part, index) => {
+        if (urlPattern.test(part)) {
+          return (
+            <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              {part.length > 20 ? `${part.slice(0, 17)}...` : part}
+            </a>
+          );
+        }
+        return <span key={index}>{part}</span>;
+      })}
+    </span>
+  ));
 };
 
 export function PostCard({ title, content, path, timeAgo, icon_number }: PostCardProps) {
