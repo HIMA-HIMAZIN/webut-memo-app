@@ -109,6 +109,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
           {userAvatar && (
             <Image
               src={userAvatar}
+              width={48}
+              height={48}
               alt="User Avatar"
               className="w-12 h-12 rounded-full"
             />
