@@ -82,11 +82,21 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
+    const lines = input.split("\n");
+  
+    if (lines.length > 10) {
+      setError("メモは10行以内にしてください。");
+      return;
+    }
+  
     setMemo(input);
-
+    setError(null); // Clear error if line count is valid
+  
     const displayLen = calculateDisplayLength(input);
     setDisplayLength(displayLen);
-    setError(displayLen > MAX_CHAR_LIMIT ? "文字数が150文字を超えています。" : null);
+    if (displayLen > MAX_CHAR_LIMIT) {
+      setError("文字数が150文字を超えています。");
+    }
   };
 
   const handleSwitchChange = () => {
