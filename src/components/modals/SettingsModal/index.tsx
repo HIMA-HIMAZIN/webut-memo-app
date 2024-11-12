@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { WarningTriangleSolid } from 'iconoir-react';
-import supabase from '@/utils/supabase/Client';
+import supabase from '@/utils/supabase/client';
 
 interface SettingsModalProps {
   isOpen: boolean;

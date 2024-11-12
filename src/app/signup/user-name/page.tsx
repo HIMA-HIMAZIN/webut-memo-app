@@ -1,24 +1,31 @@
 "use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { ArrowRightCircle } from 'iconoir-react';
+
+// コンポーネント
 import { ProgressionCircle } from '@/components/bar/ProgressionBar';
 import { GuideTitle } from '@/components/headers/GuideTitle';
-import { Box, TextField } from '@mui/material';
 import { ProceedButton } from '@/components/buttons/ProceedButton';
+
+// ライブラリ
+import { ArrowRightCircle } from 'iconoir-react';
+
+// API
+import { updateUserId } from '@/utils/signup/api';
+
+// MUI
+import { Box, TextField } from '@mui/material';
 
 const CreateUserName = () => {
   const [activeStep] = useState(1);
-  const [userName, setUserName] = useState("");
+  const [user_name, setUserName] = useState("");
   const [error, setError] = useState("");
-  const isButtonDisabled = error !== "" || userName === "";
+  const isButtonDisabled = error !== "" || user_name === "";
 
   // ユーザーネームのバリデーション
   const validateUserName = (value: string) => {
     if (value.length === 0) {
       setError("");
-    } else if (value.length < 5) {
-      setError("5文字以上で入力してください。");
     } else if (value.length > 20) {
       setError("20文字以下で入力してください。");
     } else if (!/^[a-zA-Z0-9]+$/.test(value)) {
@@ -27,6 +34,17 @@ const CreateUserName = () => {
       setError("");
     }
     setUserName(value);
+  };
+
+  const handleProceedClick = async () => {
+    const userId = "YOUR_USER_ID"; // ここに実際のユーザーIDを設定
+    const result = await updateUserId(userId, user_name);
+    if (result) {
+      console.log("ユーザー名が更新されました");
+      // ここでページ遷移または次の処理を実行
+    } else {
+      console.error("ユーザー名の更新に失敗しました");
+    }
   };
 
   return (
@@ -41,29 +59,29 @@ const CreateUserName = () => {
         {/* ProgressionCircleの表示 */}
         <ProgressionCircle activeStep={activeStep} />
 
-        {/* GuideTitleの表示 */}
         <GuideTitle text="世界に一つだけの名前をつけよう" />
 
-        {/* テキストボックスの表示 */}
         <Box sx={{ width: '40%', mt: 20 }}>
           <TextField
             fullWidth
-            label="ユーザーネーム"
+            label="ユーザー名"
             id="fullWidth"
-            value={userName}
+            value={user_name}
             onChange={(e) => validateUserName(e.target.value)}
             error={!!error}
-            helperText={error || "5文字以上20文字以下のローマ字と数字のみで入力してください。"}
-            FormHelperTextProps={{
-              style: { color: error ? 'red' : 'black' }, // エラーメッセージは赤、案内は黒
-            }}
+            helperText={error || "20文字以下のローマ字と数字のみで入力してください。"}
+            slotProps={
+              {formHelperText(ownerState) {
+                return {style: {color: error ? 'red' : 'black'
+              },}
+            }}}
           />
         </Box>
         {/* ProceedButtonの表示 */}
         <ProceedButton
           title="登録する"
           icon={ArrowRightCircle}
-          path="/signup/select-icon"
+          navigateTo="/signup/select-icon"
           disabled={isButtonDisabled}
         />
       </div>

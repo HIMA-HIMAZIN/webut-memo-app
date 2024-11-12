@@ -23,7 +23,7 @@ import LoadingScreen from '@/components/LoadingScreen';
 import { fetchMemos } from '@/utils/IndividualMemo/api';
 import { fetchUser } from '@/utils/profile/api';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
-import supabase from "@/utils/supabase/Client";
+import supabase from "@/utils/supabase/client";
 
 //types
 import { MemoLogType, AccountType } from '@/types';

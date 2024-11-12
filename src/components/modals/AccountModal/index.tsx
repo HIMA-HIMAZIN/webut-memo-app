@@ -4,7 +4,7 @@ import React, { useState ,useRef, useEffect, useCallback } from "react";
 import { useRouter } from 'next/navigation';
 import { Xmark } from 'iconoir-react';
 import Script from 'next/script';
-import supabase from "@/utils/supabase/Client";
+import supabase from "@/utils/supabase/client";
 
 const clientId = process.env.NEXT_PUBLIC_Google_Client_ID!;
 

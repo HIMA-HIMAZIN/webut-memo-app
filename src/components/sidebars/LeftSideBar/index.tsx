@@ -15,7 +15,7 @@ import { AccountModal } from '@/components/modals/AccountModal';
 import SettingsModal from "@/components/modals/SettingsModal";
 
 // utils
-import supabase from "@/utils/supabase/Client";
+import supabase from "@/utils/supabase/client";
 import {fetchUserName} from "@/utils/useName/api";
 
 // types
