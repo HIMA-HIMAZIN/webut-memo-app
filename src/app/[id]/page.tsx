@@ -18,6 +18,7 @@ import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import ArrowBox from '@/components/boxes/ArrowBox';
 import LoadingScreen from '@/components/LoadingScreen';
+import AccountEditModal from '@/components/modals/AccountEditModal';
 
 //utils
 import { fetchMemos } from '@/utils/IndividualMemo/api';
@@ -67,6 +68,7 @@ export default function Profile({}: { params: { id: string } }) {
   const [countMemos, setCountMemos] = useState(0);
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -114,6 +116,14 @@ export default function Profile({}: { params: { id: string } }) {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const renderTabPanelContent = (daysAgo: number) => {
@@ -173,7 +183,7 @@ export default function Profile({}: { params: { id: string } }) {
         <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar/>
         </div>
-        <div className="md:w-1/2 bg-white md:min-w-[640px]">
+        <div className="w-full md:w-1/2 bg-white md:min-w-[640px]">
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
               <ReturnButton />
@@ -184,9 +194,16 @@ export default function Profile({}: { params: { id: string } }) {
                 <Image className='rounded-full' src={image} alt="profile" height={80} width={80}/>
                 <div>
                 </div>
-                <div className='flex flex-col items-center '>
-                  <Edit color="#5DB53E" height={30} width={30}/>
-                  <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
+                <div className='flex items-center justify-between space-x-10'>
+                  <div className='flex flex-col items-center'>
+                    <Edit color="#5DB53E" height={30} width={30}/>
+                    <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
+                  </div>
+                  {userId === user?.id && (
+                    <button className='text-xl font-bold text-[#8C8C8C]' onClick={handleOpenModal}>
+                      編集
+                    </button>
+                  )}
                 </div>
               </div>
               <ArrowBox>{user?.bio || "一言メッセージはありません。"}</ArrowBox>
@@ -240,6 +257,7 @@ export default function Profile({}: { params: { id: string } }) {
         <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <RightSideBar/>
         </div>
+        <AccountEditModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
     </div>
   );

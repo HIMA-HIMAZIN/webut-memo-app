@@ -8,7 +8,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { TrashSolid, EditPencil} from 'iconoir-react';
 import { deleteMemo } from '@/utils/IndividualMemo/api';
 import WarningModal from '@/components/modals/WarningModal';
-import {EditModal} from "@/components/modals/MemoEditModal"
+import {EditModal} from "@/components/modals/MemoEditModal";
 
 interface IndividualPostCardProps {
   id: number;
