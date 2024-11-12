@@ -29,7 +29,6 @@ export default function Home() {
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar />
         </div>
-
         <div className="w-full md:w-1/2 md:min-w-[640px] bg-white">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">

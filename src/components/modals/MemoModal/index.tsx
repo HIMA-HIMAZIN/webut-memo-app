@@ -7,7 +7,8 @@ import { Planet, Edit } from "iconoir-react";
 import { postMemo } from "@/utils/IndividualMemo/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
-import supabase from "@/utils/supabase/Client";
+//import { filterProfanity } from "@/filters/profanityFilter";
+import supabase from "@/utils/supabase/client";
 
 const MAX_CHAR_LIMIT = 150;
 const URL_REGEX = /https?:\/\/[^\s]+/g;
@@ -93,6 +94,10 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   };
 
   const handleSubmit = async () => {
+    // if (filterProfanity(memo)) {
+    //   setError("禁止ワードが含まれています。");
+    //   return;
+    // }
     try {
       const result = await postMemo(memo, isPublic, userId!);
       if (result) {
