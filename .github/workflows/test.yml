@@ -52,12 +52,26 @@ jobs:
         with:
           node-version: "18"
 
-      # Initialize & Run ESLint and Tests
-      - name: Initialize & Run ESLint and Tests
-        run: |
-          npm install
-          npm run lint  # ESLintのチェックを実行
-          npx jest --passWithNoTests  # 依存関係をインストールしてテストを実行。テストがない場合でもコード0で終了。
+      # Install dependencies
+      test_ESLint:
+        runs-on: ubuntu-latest
+        needs: [test, notify_test_start]
+        if: ESLint()
+        steps:
+
+          # Run ESLint
+          - name: Run ESLint
+            run: npm run lint
+
+          # Show message after ESLint completes
+          - name: ESLint Completion Message
+          if: ${{ success() }}
+          run: echo "ESLintが完了しました"
+
+          # Run tests
+          - name: Run Tests
+          run: npx jest --passWithNoTests
+
 
   # Notify Success
   notify_test_success:
