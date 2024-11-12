@@ -36,19 +36,14 @@ declare global {
 
 export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isClient, setIsClient] = useState(false); 
   const router = useRouter();
-
-  useEffect(() => {
-    setIsClient(true); 
-  }, []);
 
   const handleSignInWithGoogle = useCallback(
     async (response: GoogleSignInResponse) => {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
-         nonce: '<NONCE>',
+        nonce: '<NONCE>',
       });
 
       if (error) {
@@ -57,20 +52,22 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
       }
 
       if (data && data.user) {
-        const user = data.user;
-
-        // 現在の時刻を取得して、新規ユーザーかを判定
-        const userCreatedTime = new Date(user.created_at).getTime();
-        const now = Date.now();
-        const timeDifference = now - userCreatedTime;
-        
-        // もしユーザーが1分以内に作成された場合、新規ユーザーとみなす
-        const isNewUser = timeDifference < 60000;
-
+        const { created_at, updated_at } = data.user;
+  
+        if (!created_at || !updated_at) {
+          console.error('Error: Missing created_at or updated_at timestamp.');
+          return;
+        }
+  
+        const userCreatedAt = new Date(created_at).getTime();
+        const userLastSignInAt = new Date(updated_at).getTime();
+  
+       // タイムスタンプの差が1秒（1000ミリ秒）以内であれば新規ユーザーとみなす
+        const isNewUser = Math.abs(userCreatedAt - userLastSignInAt) < 1000;
+  
         if (isNewUser) {
-          router.push('/signup/user-name'); // ユーザー名作成ページにリダイレクト
+          router.push('/signup/user-name'); 
         } else {
-          // 既存ユーザーの場合、通常のログイン処理
           onLogin();
           onClose(); 
         }
@@ -79,8 +76,10 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
     [onLogin, onClose, router]
   );
 
+
+
   useEffect(() => {
-    if (isOpen && isClient) { // クライアントサイドでのみスクリプトをロード
+    if (isOpen) { 
       window.handleSignInWithGoogle = handleSignInWithGoogle;
 
       const script = document.createElement('script');
@@ -117,7 +116,7 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
         document.removeEventListener("mousedown", handleClickOutside);
       };
     }
-  }, [isOpen, handleSignInWithGoogle, onClose, isClient]);
+  }, [isOpen, handleSignInWithGoogle, onClose]);
 
   if (!isOpen) return null;
   
@@ -130,7 +129,6 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
       >
         <Xmark height={40} width={40} strokeWidth={2} />
       </button>
-
       <div
         ref={modalRef}
         className="bg-white p-8 rounded-3xl shadow-lg w-4/5 max-w-md h-auto flex flex-col items-center"
@@ -141,7 +139,6 @@ export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
             あなたの独り言
           </p>
         </div>
-
         <div className="scale-150 mb-4">
           <div
             id="g_id_onload"
