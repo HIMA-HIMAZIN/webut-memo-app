@@ -82,27 +82,5 @@ export async function updateUserHandle(userId: string, display_name:string): Pro
   }
 
 
-// ユーザー情報を更新するAPI
-export async function updateUser(userId:string,user_name:string,profile_picture:number, display_name:string,bio:string): Promise<AccountType | null> {
-  try {
-    const response = await fetch('http://localhost:3000/api/user-name', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id : userId, user_name: user_name, profile_picture: profile_picture, display_name: display_name, bio: bio }),
-    });
-    if (!response.ok) {
-      throw new Error("Failed to update memo");
-    }
-    return response.json();
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-
-  
 
 
