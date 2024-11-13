@@ -8,7 +8,7 @@ module.exports = {
       "eslint:recommended",
       "plugin:react/recommended",
       "plugin:@typescript-eslint/recommended",
-      "plugin:next/recommended", // Next.js用の推奨設定
+      "plugin:next/recommended", 
     ],
     parserOptions: {
       ecmaVersion: 12,
@@ -21,7 +21,7 @@ module.exports = {
       "no-unused-vars": "warn",
       "no-console": "warn",
       "eqeqeq": ["error", "always"],
-      "@next/next/no-html-link-for-pages": "off", // ルール無効化
+      "@next/next/no-html-link-for-pages": "off", 
     },
   }
   
