@@ -9,13 +9,10 @@ export async function fetchPrivateMemos(user_id: string): Promise<MemoLogType[] 
         },
         cache: 'no-store',
       });
-      
-      if (!response.ok) {
-      }
-      
       const data = await response.json();
       return data.memos;
     } catch (error) {
+      console.error(error);
       return [];
     }
   }

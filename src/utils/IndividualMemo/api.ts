@@ -35,6 +35,7 @@ export async function postMemo(memoContent: string, isPublic : boolean, userId: 
     });
     return response.json();
   } catch (error) {
+    console.error(error);
     return null;
   }
 }

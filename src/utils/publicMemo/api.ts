@@ -6,11 +6,10 @@ export async function fetchMemos(): Promise<MemoLogType[]> {
     const response = await fetch('http://localhost:3000/api/public-memo', {
       cache: 'no-store',
     });
-    if (!response.ok) {
-    }
     const data = await response.json();
     return data.memos;
   } catch (error) {
+    console.error(error);
     return [];
   }
 }

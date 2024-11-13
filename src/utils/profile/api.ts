@@ -18,6 +18,7 @@ export async function fetchUser(id: string): Promise<AccountType | null> {
     const data = await response.json();
     return data.user;
   } catch (error) {
+    console.error(error);
     return null;
   }
 }
