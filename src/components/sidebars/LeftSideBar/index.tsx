@@ -16,7 +16,7 @@ import SettingsModal from "@/components/modals/SettingsModal";
 
 // utils
 import supabase from "@/utils/supabase/client";
-import {fetchUserName} from "@/utils/userName/api";
+import {fetchUserName} from "@/utils/userData/api";
 
 // types
 import { AccountType } from "@/types";

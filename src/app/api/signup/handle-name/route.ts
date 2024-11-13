@@ -17,7 +17,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
     try {
         const { id, display_name } = await req.json();
         await main();
-        const updatedMemo = await prisma.account.update({
+        const updatedUserHandle = await prisma.account.update({
             where: {
                 id: id,
             },
@@ -26,7 +26,7 @@ export const PUT = async (req: Request, res: NextResponse) => {
                 updated_at: new Date(),
             },
         });
-        return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });
+        return NextResponse.json({ message: 'success', updatedUserHandle }, { status: 200 });
     } catch (e) {
         return NextResponse.json({ message: 'error', e }, { status: 500 });
     } finally {

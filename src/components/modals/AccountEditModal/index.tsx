@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { Box, TextField } from '@mui/material';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
 import supabase from '@/utils/supabase/client';
-import {fetchUserName} from "@/utils/userName/api";
-import {updateUser} from "@/utils/signup/api";
+import {fetchUserName} from "@/utils/userData/api";
+import {updateUser} from "@/utils/userData/api";
 
 interface AccountEditModalProps {
   isOpen: boolean;
