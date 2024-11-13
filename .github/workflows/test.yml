@@ -3,10 +3,10 @@ name: CI Workflow
 on:
   push:
     branches:
-      - main
+      - feature-bottom-navigation-bar
   pull_request:
     branches:
-      - main
+      - feature-bottom-navigation-bar
 
 jobs:
   # Notify Test Start
