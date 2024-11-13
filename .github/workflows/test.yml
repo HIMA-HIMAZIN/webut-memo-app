@@ -52,32 +52,27 @@ jobs:
         with:
           node-version: "18"
 
-      # Install dependencies
-      test_ESLint:
-        runs-on: ubuntu-latest
-        needs: [test, notify_test_start]
-        if: ESLint()
-        steps:
+      - name: Install dependencies
+        run: npm install
 
-          # Run ESLint
-          - name: Run ESLint
-            run: npm run lint
+      # Run ESLint
+      - name: Run ESLint
+        run: npm run lint
 
-          # Show message after ESLint completes
-          - name: ESLint Completion Message
-          if: ${{ success() }}
-          run: echo "ESLintが完了しました"
+      # Show message after ESLint completes
+      - name: ESLint Completion Message
+        if: ${{ success() }}
+        run: echo "ESLintが完了しました"
 
-          # Run tests
-          - name: Run Tests
-          run: npx jest --passWithNoTests
-
+      # Run tests
+      - name: Run Tests
+        run: npx jest --passWithNoTests
 
   # Notify Success
   notify_test_success:
     runs-on: ubuntu-latest
     needs: [test, notify_test_start]
-    if: success()
+    if: ${{ success() }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -94,7 +89,7 @@ jobs:
   notify_test_failure:
     runs-on: ubuntu-latest
     needs: [test, notify_test_start]
-    if: failure()
+    if: ${{ failure() }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -111,7 +106,7 @@ jobs:
   notify_test_cancelled:
     runs-on: ubuntu-latest
     needs: [test, notify_test_start]
-    if: cancelled()
+    if: ${{ cancelled() }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
