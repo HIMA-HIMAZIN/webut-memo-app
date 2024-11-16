@@ -36,15 +36,21 @@ const parseContentWithLinks = (text: string) => {
   ));
 };
 
-export function PostCard({ title, content, path, timeAgo, icon_number }: PostCardProps) {
+
+export function PostCard({user_id ,monologue_id, title, content, path, timeAgo, icon_number }: PostCardProps) {
   const [favo, setFavo] = useState(false);
-  const handleClick = () => {
+  const handleClick = async () => {
+    if (!user_id) {
+      return;
+    }
     if (favo === false) {
-        setFavo(true);
-      } else {
-        setFavo(false);
-      }
-    };
+      setFavo(true);
+      await postLike( user_id ,monologue_id);
+    } else {
+      setFavo(false);
+      await deleteLike(user_id ,monologue_id);
+    }
+  };
   return (
     <div className="w-full bg-white border-b border-gray-200">
       <div className="flex justify-between items-center">
