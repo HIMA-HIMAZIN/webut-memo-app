@@ -5,8 +5,11 @@ import { ProfileButton } from "@/components/buttons/ProfileButton";
 import { IconButton } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import {postLike , deleteLike} from "@/utils/likes/api";
 
 interface PostCardProps {
+  user_id? : string;
+  monologue_id: number;
   title: string;
   content: string;
   path: string;
@@ -53,9 +56,11 @@ export function PostCard({ title, content, path, timeAgo, icon_number }: PostCar
         </div>
         <div className="flex flex-col items-center m-5">
           <span className="text-base text-gray-500">{timeAgo}</span>
-          <IconButton onClick={handleClick}>
-            {favo ? <FavoriteIcon style={{ color: '#F55757' ,fontSize: '2rem'}} /> : <FavoriteBorderIcon style={{ fontSize: '2rem' }}/>}
-          </IconButton>
+          {user_id  && (
+            <IconButton onClick={handleClick}>
+              {favo ? <FavoriteIcon style={{ color: '#F55757' ,fontSize: '2rem'}} /> : <FavoriteBorderIcon style={{ fontSize: '2rem' }}/>}
+            </IconButton>
+          )}
         </div>
       </div>
     </div>
