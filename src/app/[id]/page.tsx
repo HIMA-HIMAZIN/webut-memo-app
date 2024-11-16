@@ -158,6 +158,8 @@ export default function Profile({}: { params: { id: string } }) {
         ) : (
           <PostCard
             key={memo.id}
+            user_id={userId ?? undefined}
+            monologue_id = {memo.id}
             title={user?.display_name || "No Name"}
             content={memo.content}
             icon_number={user?.profile_picture || 1}
