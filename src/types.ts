@@ -22,3 +22,10 @@ export type AccountType = {
     user_name: string;
 };
 
+export type LikeType = {
+    id: string;
+    user_id: string;
+    memo_id: number;
+    created_at: string;
+    updated_at: string;
+}
