@@ -9,9 +9,24 @@ import ReloadButton from '../components/buttons/ReloadButton';
 import { formatDistanceToNow } from 'date-fns';
 import { fetchMemos } from '@/utils/publicMemo/api';
 import { ja } from 'date-fns/locale';
+import supabase from '@/utils/supabase/client';
 
 export default function Home() {
   const [memos, setMemos] = useState<MemoLogType[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // ログインしているユーザーIDを取得
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("ユーザーの取得に失敗しました:", error);
+      } else if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const getMemos = async () => {
@@ -35,6 +50,8 @@ export default function Home() {
             {memos.map((memo: MemoLogType) => (
               <PostCard
                 key={memo.id}
+                user_id =  {userId ?? undefined}
+                monologue_id={memo.id}
                 title={memo.account.display_name || "No Name"}
                 content={memo.content}
                 path={memo.account.user_name}
