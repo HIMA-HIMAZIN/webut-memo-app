@@ -23,7 +23,7 @@ export async function fetchMemos(user_id: string): Promise<MemoLogType[] | null>
   }
 }
 
-//　メモを投稿するAPI
+//メモを投稿するAPI
 export async function postMemo(memoContent: string, isPublic : boolean, userId: string): Promise<MemoLogType | null> {
   try {
     const response = await fetch('http://localhost:3000/api/individual-memo', {

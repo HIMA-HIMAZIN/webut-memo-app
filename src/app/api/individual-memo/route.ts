@@ -62,7 +62,6 @@ export const POST= async (req: Request, res: NextResponse) => {
  };
 
 // メモ更新API
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PUT = async (req: Request) => {
   try {
     const { id, content, isPublic } = await req.json();
