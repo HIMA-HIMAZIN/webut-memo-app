@@ -8,7 +8,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { TrashSolid, EditPencil} from 'iconoir-react';
 import { deleteMemo } from '@/utils/IndividualMemo/api';
 import WarningModal from '@/components/modals/WarningModal';
-import {EditModal} from "@/components/modals/EditModal"
+import {EditModal} from "@/components/modals/MemoEditModal";
 
 interface IndividualPostCardProps {
   id: number;
@@ -22,18 +22,21 @@ interface IndividualPostCardProps {
 
 const parseContentWithLinks = (text: string) => {
   const urlPattern = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlPattern);
   
-  return parts.map((part, index) => {
-    if (urlPattern.test(part)) {
-      return (
-        <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-          {part.length > 20 ? `${part.slice(0, 17)}...` : part}
-        </a>
-      );
-    }
-    return <span key={index}>{part}</span>;
-  });
+  return text.split('\n').map((line, lineIndex) => (
+    <span key={lineIndex} style={{ display: 'block', whiteSpace: 'pre-wrap' }}>
+      {line.split(urlPattern).map((part, index) => {
+        if (urlPattern.test(part)) {
+          return (
+            <a key={index} href={part} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+              {part.length > 20 ? `${part.slice(0, 17)}...` : part}
+            </a>
+          );
+        }
+        return <span key={index}>{part}</span>;
+      })}
+    </span>
+  ));
 };
 
 export function IndividualPostCard({ id, title, content, path, timeAgo, icon_nuber,isPublic}: IndividualPostCardProps) {

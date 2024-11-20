@@ -7,12 +7,13 @@ import { Edit } from "iconoir-react";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
 import { filterProfanity } from "@/filters/profanityFilter";
-import {updateMemo} from "@/utils/IndividualMemo/api";
+import { updateMemo } from "@/utils/IndividualMemo/api";
 
 const MAX_CHAR_LIMIT = 150;
+const URL_REGEX = /https?:\/\/[^\s]+/g;
 
 interface EditModalProps {
-  id : number ;
+  id: number;
   isOpen: boolean;
   onClose: () => void;
   initialMemo: string;
@@ -64,16 +65,13 @@ export function EditModal({
   }, [initialMemo]);
 
   const calculateDisplayLength = (text: string) => {
-    const urlPattern = /https?:\/\/[^\s]+/g;
-    let totalLength = 0;
+    const parts = text.split(URL_REGEX);
+    const urls = text.match(URL_REGEX) || [];
+    return parts.reduce((sum, part) => sum + part.length, 0) + urls.reduce((sum, url) => sum + (url.length > 20 ? 20 : url.length), 0);
+  };
 
-    const parts = text.split(urlPattern);
-    const urls = text.match(urlPattern) || [];
-
-    totalLength += parts.reduce((sum, part) => sum + part.length, 0);
-    totalLength += urls.reduce((sum, url) => sum + (url.length > 20 ? 20 : url.length), 0);
-
-    return totalLength;
+  const highlightUrls = (text: string) => {
+    return text.replace(URL_REGEX, (url) => `<span style="color: blue;">${url}</span>`);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -122,13 +120,26 @@ export function EditModal({
             <IosSwitcheButton checked={isPublic} onChange={handleSwitchChange} />
           </div>
         </div>
-        <textarea
-          className="w-full h-full p-2 resize-none overflow-y-auto text-2xl border-none outline-none"
-          placeholder="メモを編集..."
-          value={memo}
-          onChange={handleChange}
-          style={{ fontSize: "24px" }}
-        ></textarea>
+        <div className="relative w-full h-full">
+          <div
+            className="absolute inset-0 p-2 text-2xl whitespace-pre-wrap"
+            style={{
+              color: "black",
+              zIndex: 1,
+              fontSize: "24px",
+              overflowY: "auto",
+              pointerEvents: "none",
+            }}
+            dangerouslySetInnerHTML={{ __html: highlightUrls(memo) }}
+          />
+          <textarea
+            className="absolute inset-0 w-full h-full p-2 text-2xl resize-none border-none outline-none"
+            placeholder="メモを編集..."
+            value={memo}
+            onChange={handleChange}
+            style={{ color: "black", background: "transparent", fontSize: "24px" }}
+          ></textarea>
+        </div>
         <div className="flex justify-end items-center mt-2">
           {error && <p className="text-red-500">{error}</p>}
           <span className={`text-sm pl-5 ${displayLength > MAX_CHAR_LIMIT ? "text-red-500" : "text-gray-600"}`}>

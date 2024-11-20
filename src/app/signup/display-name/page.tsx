@@ -2,47 +2,76 @@
 
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ArrowRightCircle } from 'iconoir-react';
+
+// コンポーネント
 import { ProgressionCircle } from '@/components/bar/ProgressionBar';
 import { GuideTitle } from '@/components/headers/GuideTitle';
+import { ProceedButton } from '@/components/buttons/ProceedButton';
+
+// API
+import { updateUserHandle } from '@/utils/signup/api';
+import supabase from '@/utils/supabase/client';
+
+// MUI
 import { Box, TextField } from '@mui/material';
-import { PrimaryButton } from '@/components/buttons/PrimaryButton';
 
 const CreateUserName = () => {
   const activeStep = 3;
-  const [username, setUsername] = useState('');
+  const [display_name, setUsername] = useState('');
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
   const [helperText, setHelperText] = useState('ハンドルネームは3〜10文字で入力してください');
   const [isError, setIsError] = useState(false);
-  const router = useRouter();
+
+  // ログインしているユーザーIDを取得
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("ユーザーの取得に失敗しました:", error);
+      } else if (user) {
+        setUserId(user.id);
+      }
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
-    if (username.length === 0) {
-      setHelperText('ハンドルネームは3〜10文字で入力してください');
+    if (display_name.length === 0) {
+      setHelperText('ハンドルネームは1〜10文字で入力してください');
       setIsError(false);
       setIsButtonDisabled(true);
-    } else if (username.length >= 3 && username.length <= 10) {
+    } else if (display_name.length >= 1 && display_name.length <= 10) {
       setHelperText(''); // 条件を満たしたときは案内やエラーメッセージを消す
       setIsError(false);
       setIsButtonDisabled(false);
     } else {
       setIsError(true);
       setIsButtonDisabled(true);
-      if (username.length < 3) {
-        setHelperText('ハンドルネームは3文字以上である必要があります');
-      } else if (username.length > 10) {
+      if (display_name.length < 1) {
+        setHelperText('ハンドルネームは1文字以上である必要があります');
+      } else if (display_name.length > 10) {
         setHelperText('ハンドルネームは10文字以下である必要があります');
       }
     }
-  }, [username]);
+  }, [display_name]);
 
   const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
 
-  const buttonAction = () => {
-    router.push('/');
+  const handleProceedClick = async () => {
+    if (!userId) {
+      console.error("ユーザーIDが存在しません");
+      return;
+    }
+    const result = await updateUserHandle(userId, display_name);
+    if (result) {
+      console.log("ハンドルネームが更新されました");
+    } else {
+      console.error("ハンドルネームの更新に失敗しました");
+    }
   };
 
   return (
@@ -64,20 +93,23 @@ const CreateUserName = () => {
             fullWidth
             label="ハンドルネーム"
             id="fullWidth"
-            value={username}
+            value={display_name}
             onChange={handleUsernameChange}
             error={isError}
             helperText={helperText}
-            FormHelperTextProps={{
-              style: { color: isError ? 'red' : 'black' }, // エラー時は赤、案内時は黒
-            }}
+            slotProps={
+              {formHelperText() {
+                return {style: {color: isError ? 'red' : 'black'
+              },}
+            }}}
           />
         </Box>
-        <PrimaryButton
+        <ProceedButton
           title="登録する"
           icon={ArrowRightCircle}
-          onClick={buttonAction}
+          navigateTo="/"
           disabled={isButtonDisabled}
+          onClick={handleProceedClick}
         />
       </div>
     </div>

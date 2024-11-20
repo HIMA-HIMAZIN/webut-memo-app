@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useRef, useEffect, useCallback } from "react";
+import { useRouter } from 'next/navigation';
 import { Xmark } from 'iconoir-react';
-import { createClient } from '@supabase/supabase-js';
 import Script from 'next/script';
+import supabase from "@/utils/supabase/client";
+
+const clientId = process.env.NEXT_PUBLIC_Google_Client_ID!;
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -24,12 +27,6 @@ interface Google {
   };
 }
 
-const clientId = process.env.NEXT_PUBLIC_Google_Client_ID!;
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 declare global {
   interface Window {
     google?: Google;
@@ -37,30 +34,52 @@ declare global {
   }
 }
 
-// ログイン処理
-export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
+export function AccountModal({ isOpen, onClose, onLogin }: AccountModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const handleSignInWithGoogle = useCallback(
     async (response: GoogleSignInResponse) => {
       const { data, error } = await supabase.auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
+        nonce: '<NONCE>',
       });
 
       if (error) {
         console.error('Google Sign-In error:', error.message);
-      } else {
-        console.log('User signed in:', data);
-        onLogin();
-        onClose(); // サインイン後にモーダルを閉じる
+        return;
+      }
+
+      if (data && data.user) {
+        const { created_at, updated_at } = data.user;
+  
+        if (!created_at || !updated_at) {
+          console.error('Error: Missing created_at or updated_at timestamp.');
+          return;
+        }
+  
+        const userCreatedAt = new Date(created_at).getTime();
+        const userLastSignInAt = new Date(updated_at).getTime();
+  
+       // タイムスタンプの差が1秒（1000ミリ秒）以内であれば新規ユーザーとみなす
+        const isNewUser = Math.abs(userCreatedAt - userLastSignInAt) < 1000;
+  
+        if (isNewUser) {
+          router.push('/signup/user-name'); 
+        } else {
+          onLogin();
+          onClose(); 
+        }
       }
     },
-    [ onLogin, onClose]
+    [onLogin, onClose, router]
   );
 
+
+
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen) { 
       window.handleSignInWithGoogle = handleSignInWithGoogle;
 
       const script = document.createElement('script');
@@ -81,7 +100,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
       };
       document.head.appendChild(script);
 
-      // モーダル外クリックで閉じる処理
       const handleClickOutside = (event: MouseEvent) => {
         if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
           onClose();
@@ -89,7 +107,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
       };
       document.addEventListener("mousedown", handleClickOutside);
 
-      // クリーンアップ関数
       return () => {
         const script = document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
         if (script) {
@@ -102,7 +119,7 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
   }, [isOpen, handleSignInWithGoogle, onClose]);
 
   if (!isOpen) return null;
-
+  
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <Script src="https://accounts.google.com/gsi/client" async defer></Script>
@@ -112,7 +129,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
       >
         <Xmark height={40} width={40} strokeWidth={2} />
       </button>
-
       <div
         ref={modalRef}
         className="bg-white p-8 rounded-3xl shadow-lg w-4/5 max-w-md h-auto flex flex-col items-center"
@@ -123,7 +139,6 @@ export function AccountModal({ isOpen, onClose,  onLogin }: AccountModalProps) {
             あなたの独り言
           </p>
         </div>
-
         <div className="scale-150 mb-4">
           <div
             id="g_id_onload"

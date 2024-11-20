@@ -1,33 +1,33 @@
-import { MemoLogType } from '@/types';
+import { AccountType } from '@/types';
 
 // メモを取得するAPI
-export async function fetchUserId(): Promise<MemoLogType[]> {
+export async function fetchUserId(user_id :string): Promise<AccountType | null> {
     try {
-      const response = await fetch('http://localhost:3000/api/signup/user-name', {
+      const response = await fetch(`http://localhost:3000/api/user-name=${user_id}`, {
         cache: 'no-store',
       });
       if (!response.ok) {
         throw new Error("Failed to fetch memos");
       }
       const data = await response.json();
-      return data.memos;
+      return data.user;
     } catch (error) {
       console.error(error);
-      return [];
+      return null;
     }
   }
   
   
 
-// メモを更新するAPI
-export async function updateUserId(id: string, userId:string): Promise<MemoLogType | null> {
+// ユーザー名を更新するAPI
+export async function updateUserId(userId: string, user_name:string): Promise<AccountType | null> {
   try {
     const response = await fetch('http://localhost:3000/api/signup/user-name', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id : id, user_name : userId, }),
+      body: JSON.stringify({ id : userId, user_name : user_name, }),
     });
     if (!response.ok) {
       throw new Error("Failed to update memo");
@@ -40,15 +40,15 @@ export async function updateUserId(id: string, userId:string): Promise<MemoLogTy
 }
 
 
-// メモを更新するAPI
-export async function updateUserIcon(id: string, iconId:number): Promise<MemoLogType | null> {
+// アイコンの番号を更新するAPI
+export async function updateUserIcon(userId: string, selectedImageId:number): Promise<AccountType | null> {
     try {
       const response = await fetch('http://localhost:3000/api/signup/user-icon', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id : id,profile_picture: iconId }),
+        body: JSON.stringify({ id : userId, profile_picture: selectedImageId }),
       });
       if (!response.ok) {
         throw new Error("Failed to update memo");
@@ -61,15 +61,15 @@ export async function updateUserIcon(id: string, iconId:number): Promise<MemoLog
   }
   
 
-// メモを更新するAPI
-export async function updateUserHandle(id: string, handle:string): Promise<MemoLogType | null> {
+// ハンドルネームを更新するAPI
+export async function updateUserHandle(userId: string, display_name:string): Promise<AccountType | null> {
     try {
       const response = await fetch('http://localhost:3000/api/signup/handle-name', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id : id, display_name: handle }),
+        body: JSON.stringify({ id : userId, display_name: display_name }),
       });
       if (!response.ok) {
         throw new Error("Failed to update memo");
@@ -80,6 +80,7 @@ export async function updateUserHandle(id: string, handle:string): Promise<MemoL
       return null;
     }
   }
-  
+
+
 
 

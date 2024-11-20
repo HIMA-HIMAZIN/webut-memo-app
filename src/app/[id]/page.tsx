@@ -18,12 +18,14 @@ import { IndividualPostCard } from '@/components/cards/IndividualPostingCard';
 import { ReturnButton } from '@/components/buttons/ReturnButton';
 import ArrowBox from '@/components/boxes/ArrowBox';
 import LoadingScreen from '@/components/LoadingScreen';
+import AccountEditModal from '@/components/modals/AccountEditModal';
 
 //utils
 import { fetchMemos } from '@/utils/IndividualMemo/api';
+import { fetchPrivateMemos } from "@/utils/privateMemo/api"
 import { fetchUser } from '@/utils/profile/api';
 import { getImageSrcById } from '@/utils/iconImage/getImageSrcById';
-import supabase from "@/utils/supabase/Client";
+import supabase from "@/utils/supabase/client";
 
 //types
 import { MemoLogType, AccountType } from '@/types';
@@ -66,6 +68,7 @@ export default function Profile({}: { params: { id: string } }) {
   const [countMemos, setCountMemos] = useState(0);
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -78,30 +81,51 @@ export default function Profile({}: { params: { id: string } }) {
     const getMemos = async () => {
       try {
         const userData = await fetchUser(id);
-        if (!userData) throw new Error("User data not found");
-        setUser(userData);
-        const memosData = await fetchMemos(userData.id);
-        setImage(getImageSrcById(userData.profile_picture));
-        setCountMemos(memosData?.length ?? 0);
-
-        if (memosData) {
-          const sortedMemos = memosData.sort((a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-          setMemos(sortedMemos);
+        if (!userData) {
+          return;
         }
+        setUser(userData);
+        if (userId === user?.id){
+          const memosData = await fetchMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
+        }else{
+          const memosData = await fetchPrivateMemos(userData.id);
+          if (memosData) {
+            const sortedMemos = memosData.sort((a, b) =>
+              new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+            );
+            setMemos(sortedMemos);
+          }
+          setImage(getImageSrcById(userData.profile_picture));
+          setCountMemos(memosData?.length ?? 0);
+        }
+
       } catch (error) {
         console.error("Failed to fetch memos or user data:", error);
       } finally {
         setLoading(false);
       }
     };
-
     getMemos();
-  }, [id]);
+  }, [id, user?.id, userId]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+  
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   const renderTabPanelContent = (daysAgo: number) => {
@@ -161,7 +185,7 @@ export default function Profile({}: { params: { id: string } }) {
         <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar/>
         </div>
-        <div className="md:w-1/2 bg-white md:min-w-[640px]">
+        <div className="w-full md:w-1/2 bg-white md:min-w-[640px]">
           <div className='max-h-[40vh]'>
             <div className='flex items-center mt-10 mb-5'>
               <ReturnButton />
@@ -170,9 +194,18 @@ export default function Profile({}: { params: { id: string } }) {
             <div className='mx-10 my-5'>
               <div className='flex items-center space-x-10'>
                 <Image className='rounded-full' src={image} alt="profile" height={80} width={80}/>
-                <div className='flex flex-col items-center '>
-                  <Edit color="#5DB53E" height={30} width={30}/>
-                  <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
+                <div>
+                </div>
+                <div className='flex items-center justify-between space-x-10'>
+                  <div className='flex flex-col items-center'>
+                    <Edit color="#5DB53E" height={30} width={30}/>
+                    <div className='text-xl font-bold text-[#8C8C8C]'>{countMemos}</div>
+                  </div>
+                  {userId === user?.id && (
+                    <button className='text-xl font-bold text-[#8C8C8C]' onClick={handleOpenModal}>
+                      編集
+                    </button>
+                  )}
                 </div>
               </div>
               <ArrowBox>{user?.bio || "一言メッセージはありません。"}</ArrowBox>
@@ -226,7 +259,7 @@ export default function Profile({}: { params: { id: string } }) {
         <div className="hidden h-screen md:block w-1/4 bg-contentbg p-4">
           <RightSideBar/>
         </div>
-
+        <AccountEditModal isOpen={isModalOpen} onClose={handleCloseModal} />
       </div>
     </div>
   );

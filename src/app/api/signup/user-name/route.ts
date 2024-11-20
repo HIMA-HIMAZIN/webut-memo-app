@@ -15,18 +15,18 @@ export async function main(){
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PUT = async (req: Request, res: NextResponse) => {
     try {
-        const { id, userId } = await req.json();
+        const { id, user_name } = await req.json();
         await main();
-        const updatedMemo = await prisma.account.update({
+        const updatedUserName = await prisma.account.update({
             where: {
                 id: id,
             },
             data: {
-                user_name : userId,
+                user_name : user_name,
                 updated_at: new Date(),
             },
         });
-        return NextResponse.json({ message: 'success', updatedMemo }, { status: 200 });
+        return NextResponse.json({ message: 'success', updatedUserName }, { status: 200 });
     } catch (e) {
         return NextResponse.json({ message: 'error', e }, { status: 500 });
     } finally {

@@ -7,7 +7,7 @@ import { RightSideBar } from '../components/sidebars/RightSideBar';
 import { PostCard } from '@/components/cards/PostingCard';
 import ReloadButton from '../components/buttons/ReloadButton';
 import { formatDistanceToNow } from 'date-fns';
-import { fetchMemos } from '@/utils/whole/api';
+import { fetchMemos } from '@/utils/publicMemo/api';
 import { ja } from 'date-fns/locale';
 import { BottomBar } from '@/components/sidebars/BottomBar';
 import SettingsModal from "@/components/modals/SettingsModal";
@@ -48,8 +48,6 @@ export default function Home() {
         <div className="hidden md:block w-1/4 bg-contentbg p-4">
           <LeftSideBar />
         </div>
-
-        {/* Main content area */}
         <div className="w-full md:w-1/2 md:min-w-[640px] bg-white">
           <ReloadButton />
           <div className="overflow-y-auto max-h-[90vh]">

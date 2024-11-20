@@ -7,7 +7,8 @@ import { Planet, Edit } from "iconoir-react";
 import { postMemo } from "@/utils/IndividualMemo/api";
 import { IconText } from "@/components/headers/IconText";
 import IosSwitcheButton from "@/components/buttons/IosSwitchButton";
-import supabase from "@/utils/supabase/Client";
+//import { filterProfanity } from "@/filters/profanityFilter";
+import supabase from "@/utils/supabase/client";
 
 const MAX_CHAR_LIMIT = 150;
 const URL_REGEX = /https?:\/\/[^\s]+/g;
@@ -81,11 +82,21 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const input = e.target.value;
+    const lines = input.split("\n");
+  
+    if (lines.length > 10) {
+      setError("メモは10行以内にしてください。");
+      return;
+    }
+  
     setMemo(input);
-
+    setError(null); // Clear error if line count is valid
+  
     const displayLen = calculateDisplayLength(input);
     setDisplayLength(displayLen);
-    setError(displayLen > MAX_CHAR_LIMIT ? "文字数が150文字を超えています。" : null);
+    if (displayLen > MAX_CHAR_LIMIT) {
+      setError("文字数が150文字を超えています。");
+    }
   };
 
   const handleSwitchChange = () => {
@@ -93,6 +104,10 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   };
 
   const handleSubmit = async () => {
+    // if (filterProfanity(memo)) {
+    //   setError("禁止ワードが含まれています。");
+    //   return;
+    // }
     try {
       const result = await postMemo(memo, isPublic, userId!);
       if (result) {

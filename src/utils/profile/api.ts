@@ -13,7 +13,6 @@ export async function fetchUser(id: string): Promise<AccountType | null> {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user");
     }
 
     const data = await response.json();

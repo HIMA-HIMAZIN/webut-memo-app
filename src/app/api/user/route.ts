@@ -42,3 +42,30 @@ export const GET = async (req: Request) => {
     await prisma.$disconnect();
   }
 };
+
+
+// ユーザ情報更新API
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PUT = async (req: Request, res: NextResponse) => {
+  try {
+      const { id,user_name,profile_picture, display_name,bio } = await req.json();
+      await main();
+      const updatedUser = await prisma.account.update({
+          where: {
+              id: id,
+          },
+          data: {
+              user_name: user_name,
+              profile_picture: profile_picture,
+              display_name: display_name,
+              bio: bio,
+              updated_at: new Date(),
+          },
+      });
+      return NextResponse.json({ message: 'success', updatedUser }, { status: 200 });
+  } catch (e) {
+      return NextResponse.json({ message: 'error', e }, { status: 500 });
+  } finally {
+      await prisma.$disconnect();
+  }
+};

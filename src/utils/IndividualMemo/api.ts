@@ -33,9 +33,6 @@ export async function postMemo(memoContent: string, isPublic : boolean, userId: 
       },
       body: JSON.stringify({ content: memoContent ,is_public:isPublic, user_id: userId}),
     });
-    if (!response.ok) {
-      throw new Error("Failed to post memo");
-    }
     return response.json();
   } catch (error) {
     console.error(error);
