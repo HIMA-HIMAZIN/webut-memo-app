@@ -59,7 +59,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function Profile({}: { params: { id: string } }) {
+export default function Profile() {
   const { id } = useParams<{ id: string }>();
   const [userId, setUserId] = useState<string | null>(null);
   const [memos, setMemos] = useState<MemoLogType[]>([]);

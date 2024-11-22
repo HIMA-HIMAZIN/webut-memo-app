@@ -1,3 +1,4 @@
+import React from 'react';
 export function RightSideBar() {
   return (
   <div className="hidden md:block flex-grow bg-contentbg p-4">

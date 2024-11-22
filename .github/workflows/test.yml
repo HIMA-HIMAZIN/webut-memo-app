@@ -3,10 +3,10 @@ name: CI Workflow
 on:
   push:
     branches:
-      - main
+      - feature-bottom-navigation-bar
   pull_request:
     branches:
-      - main
+      - feature-bottom-navigation-bar
 
 jobs:
   # Notify Test Start
@@ -33,6 +33,7 @@ jobs:
 
       - name: Notify Test Start in GitHub
         run: echo "GitHub Actions Test started for ${GITHUB_REPOSITORY}" > github-message.txt
+
       - name: Upload Test Start Message
         uses: actions/upload-artifact@v3
         with:
@@ -52,12 +53,21 @@ jobs:
         with:
           node-version: "18"
 
-      # Initialize & Run ESLint and Tests
-      - name: Initialize & Run ESLint and Tests
-        run: |
-          npm install
-          npm run lint  # ESLintのチェックを実行
-          npx jest --passWithNoTests  # 依存関係をインストールしてテストを実行。テストがない場合でもコード0で終了。
+      - name: Install dependencies
+        run: npm install
+
+      # Run ESLint
+      - name: Run ESLint
+        run: npm run lint
+
+      # Show message after ESLint completes
+      - name: ESLint Completion Message
+        if: success()
+        run: echo "ESLintが完了しました"
+
+      # Run tests
+      - name: Run Tests
+        run: npx jest --passWithNoTests
 
   # Notify Success
   notify_test_success:
@@ -70,6 +80,7 @@ jobs:
 
       - name: Notify Test Success in GitHub
         run: echo "Tests succeeded in GitHub Actions for ${GITHUB_REPOSITORY}" > github-success.txt
+
       - name: Upload Test Success Message
         uses: actions/upload-artifact@v3
         with:
@@ -87,6 +98,7 @@ jobs:
 
       - name: Notify Test Failure in GitHub
         run: echo "Tests failed in GitHub Actions for ${GITHUB_REPOSITORY}" > github-failure.txt
+
       - name: Upload Test Failure Message
         uses: actions/upload-artifact@v3
         with:
@@ -104,6 +116,7 @@ jobs:
 
       - name: Notify Test Cancelled in GitHub
         run: echo "Tests cancelled in GitHub Actions for ${GITHUB_REPOSITORY}" > github-cancelled.txt
+
       - name: Upload Test Cancelled Message
         uses: actions/upload-artifact@v3
         with:
