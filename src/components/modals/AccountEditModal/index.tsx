@@ -18,6 +18,7 @@ const AccountEditModal: React.FC<AccountEditModalProps> = ({ isOpen, onClose }) 
   // State 定義
   const [UserId, setUserId] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
+  const [initialUserName, setInitialUserName] = useState<string>(''); 
   const [displayName, setDisplayName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
   const [selectedImageId, setSelectedImageId] = useState<number>(1);
@@ -39,6 +40,7 @@ const AccountEditModal: React.FC<AccountEditModalProps> = ({ isOpen, onClose }) 
         if (usersData) {
           setUserId(user.id); // ユーザーIDを設定
           setUserName(usersData.user_name); // ログイン名を設定
+          setInitialUserName(usersData.user_name); // 初期ユーザー名を保存
           setDisplayName(usersData.display_name || ''); // 表示名を設定
           setSelectedImageId(usersData.profile_picture || 1); // プロフィール画像を設定
           setBio(usersData.bio || ''); // バイオを設定
@@ -75,7 +77,11 @@ const AccountEditModal: React.FC<AccountEditModalProps> = ({ isOpen, onClose }) 
   const handleSubmit = () => {
     updateUser(UserId,userName, selectedImageId , displayName, bio);
     onClose();
-    window.location.reload();
+    if (userName !== initialUserName) {
+      window.location.href = `/${userName}`;
+    } else {
+      window.location.reload();
+    }
   };
 
   // モーダル外クリックとEscキーで閉じる処理
