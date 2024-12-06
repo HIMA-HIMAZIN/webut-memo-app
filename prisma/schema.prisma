@@ -313,21 +313,33 @@ model Memolog {
   created_at DateTime @default(now()) @db.Timestamptz(6)
   updated_at DateTime @default(now()) @db.Timestamptz(6)
   user_id    String   @db.Uuid
-  account    account? @relation(fields: [user_id], references: [id], onDelete: Cascade) // リレーションを追加
+  account    account? @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@index([user_id])
   @@schema("public")
 }
 
 model account {
-  id              String   @id(map: "users_pkey") @db.Uuid
-  user_name       String   @unique(map: "users_user_name_key")
+  id              String    @id(map: "users_pkey") @db.Uuid
+  user_name       String    @unique(map: "users_user_name_key")
   profile_picture Int?
-  display_name    String?  @db.VarChar
-  bio             String?  @db.VarChar
-  created_at      DateTime @default(now()) @db.Timestamp(6)
-  updated_at      DateTime @default(now()) @db.Timestamp(6)
-  memos           Memolog[]  // リレーションの逆方向
+  display_name    String?   @db.VarChar
+  bio             String?   @db.VarChar
+  created_at      DateTime  @default(now()) @db.Timestamp(6)
+  updated_at      DateTime  @default(now()) @db.Timestamp(6)
+  post_count      Int       @default(0)
+  memos           Memolog[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model likes {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String    @db.Uuid
+  monologue_id Int
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime? @default(now()) @db.Timestamptz(6)
 
   @@schema("public")
 }
