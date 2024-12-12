@@ -20,5 +20,6 @@ export type AccountType = {
     created_at: string;
     updated_at: string;
     user_name: string;
+    post_count: number;
 };
 
