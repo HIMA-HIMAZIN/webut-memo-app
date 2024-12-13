@@ -32,6 +32,7 @@ export const GET = async (req: Request, res: NextResponse) => {
                         profile_picture: true,
                         display_name: true,
                         bio: true,
+                        post_count: true,
                     },
                 },
             },
