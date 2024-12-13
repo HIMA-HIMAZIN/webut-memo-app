@@ -94,7 +94,7 @@ export default function Profile() {
             setMemos(sortedMemos);
           }
           setImage(getImageSrcById(userData.profile_picture));
-          setCountMemos(memosData?.length ?? 0);
+          setCountMemos(userData.post_count);
         }else{
           const memosData = await fetchPrivateMemos(userData.id);
           if (memosData) {
@@ -104,7 +104,7 @@ export default function Profile() {
             setMemos(sortedMemos);
           }
           setImage(getImageSrcById(userData.profile_picture));
-          setCountMemos(memosData?.length ?? 0);
+          setCountMemos(userData.post_count);
         }
 
       } catch (error) {
