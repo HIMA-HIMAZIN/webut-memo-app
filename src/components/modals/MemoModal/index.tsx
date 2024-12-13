@@ -23,7 +23,7 @@ export function MemoModal({ isOpen, onClose }: MemoModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const buttonWrapperRef = useRef<HTMLDivElement>(null);
   const [memo, setMemo] = useState("");
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [displayLength, setDisplayLength] = useState(0);
