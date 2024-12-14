@@ -1,21 +1,25 @@
 "use client";
 
-import * as React from 'react';
+import React from 'react';
 import Box from '@mui/material/Box';
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
-import { Planet, Edit, LogIn, Settings } from 'iconoir-react';
+import { Planet, LogIn, Settings } from 'iconoir-react';
+import Image from 'next/image';
 
 type BottomBarProps = {
   isLogin: boolean;
+  displayName?: string; // ログイン中のユーザー名
+  profilePicture?: string; // プロフィール画像URL
   onPlanetClick: () => void;
   onProfileClick: () => void;
   onSettingsClick: () => void;
-  onMemoOrLoginClick: () => void;
 };
 
 export function BottomBar({
   isLogin,
+  displayName,
+  profilePicture,
   onPlanetClick,
   onProfileClick,
   onSettingsClick,
@@ -32,10 +36,27 @@ export function BottomBar({
           // newValue に応じて各ボタンのクリックイベントを発火
           if (newValue === 0) onPlanetClick();
           else if (newValue === 1) onProfileClick();
+          else if (newValue === 2) onSettingsClick();
         }}
       >
         <BottomNavigationAction label="みんな" icon={<Planet />} />
-        <BottomNavigationAction label={isLogin ? "メモする" : "ログイン"} icon={isLogin ? <Edit /> : <LogIn />} />
+        {isLogin && displayName && profilePicture ? (
+          <BottomNavigationAction
+            label={displayName}
+            icon={
+              <Image
+                src={profilePicture}
+                alt="プロフィール画像"
+                width={24}
+                height={24}
+                className="rounded-full"
+              />
+            }
+            onClick={onProfileClick}
+          />
+        ) : (
+          <BottomNavigationAction label="ログイン" icon={<LogIn />} onClick={onProfileClick} />
+        )}
         {isLogin && (
           <BottomNavigationAction label="設定" icon={<Settings />} onClick={onSettingsClick} />
         )}
