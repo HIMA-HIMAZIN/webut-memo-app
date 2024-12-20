@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import supabase from "@/utils/supabase/client"; // Supabase クライアントのインポート
 import { LeftSideBar } from '../components/sidebars/LeftSideBar';
 import { RightSideBar } from '../components/sidebars/RightSideBar';
-import { BottomBar } from '@/components/sidebars/BottomBar';
+import { BottomBar } from '@/components/bar/BottomBar';
 import SettingsModal from "@/components/modals/SettingsModal";
-import { MentalHealthcareModal } from "@/components/modals/MentalHealthcareModal";
+import { MemoModal } from "@/components/modals/MemoModal";
 import { AccountModal } from "@/components/modals/AccountModal";
 import { MemoListContainer } from "@/components/containers/MemoListContainer";
 
@@ -14,6 +15,31 @@ export default function Home() {
   const [isMemoModalOpen, setIsMemoModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Failed to get session:', error.message);
+      } else if (session) {
+        setIsLogin(true);
+      }
+
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event) => {
+          if (event === 'SIGNED_IN') {
+            setIsLogin(true);
+          } else if (event === 'SIGNED_OUT') {
+            setIsLogin(false);
+          }
+        }
+      );
+
+      return () => authListener.subscription.unsubscribe();
+    };
+
+    checkSession();
+  }, []);
 
   // ボタンのアクション関数
   const openSettingsModal = () => setIsSettingsModalOpen(true);
@@ -48,13 +74,12 @@ export default function Home() {
           onPlanetClick={onPlanetClick}     // みんなボタンのアクション
           onProfileClick={buttonAction}     // プロフィール（メモ/ログイン）ボタンのアクション
           onSettingsClick={openSettingsModal} // 設定ボタンのアクション
-          onMemoOrLoginClick={buttonAction}
         />
       </div>
 
       {/* モーダルコンポーネントの配置 */}
       <SettingsModal isOpen={isSettingsModalOpen} onClose={closeSettingsModal} />
-      <MentalHealthcareModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
+      <MemoModal isOpen={isMemoModalOpen} onClose={closeMemoModal} />
       <AccountModal
         isOpen={isAccountModalOpen}
         onClose={closeAccountModal}

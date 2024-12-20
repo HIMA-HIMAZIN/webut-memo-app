@@ -4,16 +4,13 @@ import { AccountType } from '@/types';
 
 export async function fetchUser(id: string): Promise<AccountType | null> {
   try {
-    const response = await fetch(`http://localhost:3000/api/profile?user_id=${id}`, {
+    const response = await fetch(`/api/profile?user_id=${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
       cache: 'no-store',
     });
-
-    if (!response.ok) {
-    }
 
     const data = await response.json();
     return data.user;

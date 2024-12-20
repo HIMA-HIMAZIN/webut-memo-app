@@ -52,7 +52,7 @@ export function MentalHealthcareModal({ isOpen, onClose }: MentalHealthcareModal
       </button>
       <div
         ref={modalRef}
-        className="p-6 rounded-3xl shadow-2xl w-1/2 max-w-screen-md max-h-screen-md h-4/5 flex flex-col relative"
+        className="p-6 rounded-3xl shadow-2xl w-1/2 max-w-screen-md max-h-screen-md h-4/6 flex flex-col relative"
         style={{ backgroundColor: "#C0DDB6", border: "2px solid #5DB53E" }}
       >
         <div className="relative">
@@ -94,7 +94,7 @@ export function MentalHealthcareModal({ isOpen, onClose }: MentalHealthcareModal
           <div className="flex items-center justify-around">
               <div className="transition-transform duration-300 transform hover:scale-110 focus:outline-none">
                 <div className="text-base lg:text-xl" style={{color:"#AF9C75"}}>
-                  話を聞いて欲しい。
+                  一人にしてほしい。
                 </div>
                 <Image
                   src="/images/mental_health_icon/one.svg"
@@ -105,7 +105,7 @@ export function MentalHealthcareModal({ isOpen, onClose }: MentalHealthcareModal
               </div>
               <div className="transition-transform duration-300 transform hover:scale-110 focus:outline-none">
                 <div className="text-base lg:text-xl" style={{color:"#5DB53E"}}>
-                  話を聞いて欲しい。
+                  気分転換したい。
                 </div>
                 <Image
                   src="/images/mental_health_icon/flesh.svg"
